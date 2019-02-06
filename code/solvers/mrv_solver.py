@@ -1,7 +1,7 @@
 __author__ = 'Nikhil Pandey'
 
 """
-file: brute_force_solver.py
+file: mrv_solver.py
 language: python3
 author: np7803@rit.edu Nikhil Pandey
 description: Brute Force Solver Class
@@ -10,16 +10,14 @@ description: Brute Force Solver Class
 from solver import Solver
 
 
-class BruteForceSolver(Solver):
+class MRVSolver(Solver):
 
     def __init__(self):
         pass
 
     def solve(self, grid):
-
-
-        cell = grid.get_next_empty_cell()
-
+        
+        cell = grid.get_next_mrv_cell()
 
         if cell is None:
             if grid.is_solved():

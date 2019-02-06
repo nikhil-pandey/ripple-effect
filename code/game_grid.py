@@ -65,7 +65,11 @@ class GameGrid(object):
                         room.add_cell(new_cell)
                         self.main_queue.discard((row, col))
                         room_queue.append((row, col))
-
+        
+        for room in self.rooms:
+            count = len(room.cells) + 1
+            for cell in room.cells:
+                cell.possible_moves = set(range(1, count))
 
     def get_successors(self, position):
         """
@@ -116,6 +120,17 @@ class GameGrid(object):
             for cell in row:
                 if not cell.has_value():
                     return cell
+
+    def get_next_mrv_cell(self):
+        lowest_count = 0
+        lowest_cell = None
+        for row in self.cells:
+            for cell in row:
+                if not cell.has_value() and (lowest_cell is None or len(cell.possible_moves) < lowest_count):
+                    lowest_count = len(cell.possible_moves)
+                    lowest_cell = cell
+
+        return lowest_cell
 
 
     def is_valid(self, complete=False):

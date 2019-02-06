@@ -14,6 +14,7 @@ class Cell(object):
         self.grid = grid
         self.row = row
         self.col = col
+        self.possible_moves = set()
         self.room = None
         self.value = None
 
@@ -23,8 +24,14 @@ class Cell(object):
     def assign_room(self, room):
         self.room = room
 
+    def add_possible_move(self, val):
+        self.possible_moves.add(val)
 
     def assign_value(self, val):
+        if val is None:
+            self.value = None
+            return
+        
         old_val = self.value
         self.value = val
         
@@ -34,12 +41,15 @@ class Cell(object):
         self.value = old_val
         raise ValueError()
 
-
     def has_value(self):
         return self.value is not None
 
     def get_possible_moves(self):
-        return self.room.get_possible_moves()
+        return self.possible_moves
+
+
+    def __lt__(self, other):
+        return True
 
     def __str__(self):
         return "Cell(%d)" % (self.value if self.value else 0)

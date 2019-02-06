@@ -12,20 +12,9 @@ class Room(object):
 
     def __init__(self):
         self.cells = set()
-        self.possible_moves = []
 
     def add_cell(self, cell):
-        if not self.possible_moves:
-            self.possible_moves.append(1)
-        else:
-            self.possible_moves.append(self.possible_moves[-1]+1)
-        
         self.cells.add(cell)
-
-
-    def get_possible_moves(self):
-        return self.possible_moves
-
 
     def is_valid(self, complete=False):
 
@@ -40,7 +29,7 @@ class Room(object):
                     return False
                 continue
 
-            if cell.value < 0 or cell.value > len(self.possible_moves):
+            if cell.value < 0 or cell.value > len(self.cells):
                 return False
 
             val_seen[cell.value] = 1

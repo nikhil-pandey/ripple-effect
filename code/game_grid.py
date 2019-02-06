@@ -168,21 +168,21 @@ class GameGrid(object):
                 continue
 
             if cell.value in column_seen:
-                if ridx - row_seen[cell.value] <= cell.value:
+                if ridx - column_seen[cell.value] <= cell.value:
                     return False
 
-            row_seen[cell.value] = column_seen
+            column_seen[cell.value] = ridx
 
         return True
 
 
-    def is_complete(self):
-        return self.is_valid(complete=  True) and self.get_next_empty_cell() is None
+    def is_solved(self):
+        return self.is_valid(complete=True)
 
 
     def __str__(self):
         input_grid = self.input_grid
         for row in self.cells:
             for cell in row:
-                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(cell.value)
+                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(cell.value) if cell.value else ' '
         return '\n'.join([''.join(x) for x in input_grid])

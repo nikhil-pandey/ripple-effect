@@ -8,8 +8,8 @@ description: Brute Force Solver Class
 """
 
 from copy import deepcopy
-
 from solver import Solver
+
 
 class BruteForceSolver(Solver):
 
@@ -18,16 +18,21 @@ class BruteForceSolver(Solver):
 
     def solve(self, grid):
 
-        if not grid.is_valid():
-            return None
-        
-        if grid.is_complete():
-            return grid
-
         cell = grid.get_next_empty_cell()
+        
+        if cell is None:
+            if grid.is_solved():
+                return grid
+            
+            return None
 
         for val in cell.get_possible_moves():
-            cell.value = val
+            
+            try:
+                cell.assign_value(val)
+            except ValueError:
+                continue
+            
             solution = self.solve(grid)
 
             if solution:

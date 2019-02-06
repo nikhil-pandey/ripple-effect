@@ -13,6 +13,7 @@ grid = GameGrid()
 grid.prepare_cells()
 
 solver = BruteForceSolver()
+solver.use_queue()
 solved_grid = solver.solve(grid)
 
 print(solved_grid)

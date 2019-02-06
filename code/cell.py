@@ -27,9 +27,12 @@ class Cell(object):
     def assign_value(self, val):
         old_val = self.value
         self.value = val
-        if not (self.grid.check_row_valid(self.row) or self.grid.check_valid_column(self.column) or self.room.is_valid()):
-            self.value = old_val
-            raise ValueError()
+        
+        if self.grid.check_row_valid(self.row) and self.grid.check_column_valid(self.col) and self.room.is_valid():
+            return
+        
+        self.value = old_val
+        raise ValueError()
 
     def has_value(self):
         return self.value is not None

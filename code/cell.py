@@ -28,11 +28,12 @@ class Cell(object):
         old_val = self.value
         self.value = val
         
-        if self.grid.check_row_valid(self.row) and self.grid.check_column_valid(self.col) and self.room.is_valid():
+        if self.grid.validate_rows_cols(self) and self.room.is_valid():
             return
         
         self.value = old_val
         raise ValueError()
+
 
     def has_value(self):
         return self.value is not None

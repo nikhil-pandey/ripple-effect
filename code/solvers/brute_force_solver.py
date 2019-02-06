@@ -7,7 +7,6 @@ author: np7803@rit.edu Nikhil Pandey
 description: Brute Force Solver Class
 """
 
-from copy import deepcopy
 from solver import Solver
 
 

@@ -10,6 +10,7 @@ import sys
 import itertools
 from cell import Cell
 from room import Room
+from queue import PriorityQueue
 
 
 class GameGrid(object):
@@ -144,41 +145,19 @@ class GameGrid(object):
 
         return True
 
+    def validate_rows_cols(self, cell):
+        for cidx in range(max(0, cell.col - cell.value), min(self.column_count, cell.col + cell.value + 1)):
+            if cidx != cell.col and cell.value == self.cells[cell.row][cidx].value:
+                return False
 
-    def check_row_valid(self, row):
-        row_seen = {}
-        for cidx, cell in enumerate(self.cells[row]):
-            if not cell.has_value():
-                continue
-
-            if cell.value in row_seen:
-                if cidx - row_seen[cell.value] <= cell.value:
-                    return False
-
-            row_seen[cell.value] = cidx
+        for ridx in range(max(0, cell.row - cell.value), min(self.row_count, cell.row + cell.value + 1)):
+            if ridx != cell.row and cell.value == self.cells[ridx][cell.col].value:
+                return False
 
         return True
-
-    def check_column_valid(self, column):
-        column_seen = {}
-        for ridx in range(self.row_count):
-            cell = self.cells[ridx][column]
-            
-            if not cell.has_value():
-                continue
-
-            if cell.value in column_seen:
-                if ridx - column_seen[cell.value] <= cell.value:
-                    return False
-
-            column_seen[cell.value] = ridx
-
-        return True
-
 
     def is_solved(self):
         return self.is_valid(complete=True)
-
 
     def __str__(self):
         input_grid = self.input_grid

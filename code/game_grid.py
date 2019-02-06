@@ -1,11 +1,18 @@
+__author__ = 'Nikhil Pandey'
+
+"""
+file: maze23.py
+Author: Nikhil Pandey np7803@rit.edu
+Description: Maze solver
+"""
+
 import sys
 import itertools
-
 from cell import Cell
 from room import Room
 
 
-class GridReader(object):
+class GameGrid(object):
 
     def __init__(self):
         """
@@ -17,15 +24,16 @@ class GridReader(object):
         try:
             file = sys.argv[1]
             with open(file, 'r') as f:
-                self.rows, self.cols = (int(x) for x in f.readline().split())
+                self.row_count, self.column_count = (int(x) for x in f.readline().split())
                 self.grid = [list(l.rstrip('\n')) for idx, l in
                              enumerate(f.readlines())]
 
-            self.main_queue = set(itertools.product(range(0, self.rows),
-                                                    range(0, self.cols)))
+            self.main_queue = set(itertools.product(range(0, self.row_count),
+                                                    range(0, self.column_count)))
 
-            self.cells = [[None for _ in range(0, self.cols)] for __ in
-                          range(0, self.rows)]
+            self.cells = [[None for _ in range(0, self.column_count)] for __ in
+                          range(0, self.row_count)]
+            self.rooms = []
 
         except (IndexError, FileNotFoundError):
             print('Usage: python3 rumbe.py <grid_file>')
@@ -34,6 +42,7 @@ class GridReader(object):
     def prepare_cells(self):
         while self.main_queue:
             room = Room()
+            self.rooms.append(room)
             cell = self.get_or_create_cell(*self.main_queue.pop())
             cell.assign_room(room)
             room.add_cell(cell)
@@ -55,6 +64,7 @@ class GridReader(object):
                         room.add_cell(new_cell)
                         self.main_queue.discard((row, col))
                         room_queue.append((row, col))
+
 
     def get_successors(self, position):
         """
@@ -81,9 +91,9 @@ class GridReader(object):
             separator, actual_succ_posn = s(*actual_grid_pos)
 
             if actual_succ_posn[0] < 0 or actual_succ_posn[0] - 1 >= \
-                    self.rows \
+                    self.row_count \
                     or actual_succ_posn[1] < 0 or actual_succ_posn[
-                1] - 1 >= self.cols:
+                1] - 1 >= self.column_count:
                 continue
 
             if self.grid[separator[0]][separator[1]] == '|' or \
@@ -98,3 +108,55 @@ class GridReader(object):
                                         self.grid[row * 2 + 1][col * 2 + 1])
 
         return self.cells[row][col]
+
+
+    def get_next_empty_cell(self):
+        for row in self.cells:
+            for cell in row:
+                if not cell.has_value():
+                    return cell
+
+
+    def is_valid(self, complete=False):
+        for room in self.rooms:
+            if not room.is_valid(complete):
+                return False
+
+        row_seen = [{} for _ in range(self.row_count)]
+        col_seen = [{} for _ in range(self.column_count)]
+        for ridx, row in enumerate(self.cells):
+            for cidx, cell in enumerate(row):
+                if not cell.has_value():
+                    if complete:
+                        print('GRID - Completion check. 0 not valid')
+                        return False
+                    continue
+                
+                if cell.value in row_seen[ridx]:
+                    if cidx - row_seen[ridx][cell.value] <= cell.value:
+                        print('GRID - ROW repeated value not enough distance far', row_seen[ridx][cell.value], cidx, cell.value)
+                        return False
+                row_seen[ridx][cell.value] = cidx
+
+                if cell.value in col_seen[cidx]:
+                    if ridx - col_seen[cidx][cell.value] <= cell.value:
+                        print('GRID - COL repeated value not enough distance far')
+                        return False
+
+                col_seen[cidx][cell.value] = ridx
+
+        return True
+
+
+    def is_complete(self):
+        return self.is_valid(complete=  True) and self.get_next_empty_cell() is None
+
+
+    def __str__(self):
+        s = ''
+        for row in self.cells:
+            for cell in row:
+                s += str(cell) + ' '
+            s += '\n'
+
+        return s.strip()

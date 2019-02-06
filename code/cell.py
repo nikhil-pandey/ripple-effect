@@ -14,6 +14,7 @@ class Cell(object):
         self.row = row
         self.col = col
         self.room = None
+        self.value = None
 
         if value != '.':
             self.value = int(value)
@@ -21,5 +22,14 @@ class Cell(object):
     def assign_room(self, room):
         self.room = room
 
-    def __repr__(self):
-        return "Cell(%d, %d, %d)" % (self.row, self.col, self.value)
+
+    def has_value(self):
+        return self.value is not None
+
+
+    def get_possible_moves(self):
+        return self.room.get_possible_moves()
+
+
+    def __str__(self):
+        return "Cell(%d)" % (self.value if self.value else 0)

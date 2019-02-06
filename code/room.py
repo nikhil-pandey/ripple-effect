@@ -33,17 +33,14 @@ class Room(object):
         
         for cell in self.cells:
             if cell.value in val_seen:
-                print('ROOM - Row cannot have duplicate values')
                 return False
 
             if cell.value is None:
                 if complete:
-                    print('ROOM - Completion check failed. 0 value')
                     return False
                 continue
 
             if cell.value < 0 or cell.value > len(self.possible_moves):
-                print('ROOM - value less than 0 or more than max value')
                 return False
 
             val_seen[cell.value] = 1

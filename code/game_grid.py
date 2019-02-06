@@ -25,7 +25,7 @@ class GameGrid(object):
             file = sys.argv[1]
             with open(file, 'r') as f:
                 self.row_count, self.column_count = (int(x) for x in f.readline().split())
-                self.grid = [list(l.rstrip('\n')) for idx, l in
+                self.input_grid = [list(l.rstrip('\n')) for idx, l in
                              enumerate(f.readlines())]
 
             self.main_queue = set(itertools.product(range(0, self.row_count),
@@ -36,7 +36,7 @@ class GameGrid(object):
             self.rooms = []
 
         except (IndexError, FileNotFoundError):
-            print('Usage: python3 rumbe.py <grid_file>')
+            print('Usage: python3 __main__.py <grid_file>')
             sys.exit(1)
 
     def prepare_cells(self):
@@ -96,16 +96,16 @@ class GameGrid(object):
                 1] - 1 >= self.column_count:
                 continue
 
-            if self.grid[separator[0]][separator[1]] == '|' or \
-                    self.grid[separator[0]][separator[1]] == '-':
+            if self.input_grid[separator[0]][separator[1]] == '|' or \
+                    self.input_grid[separator[0]][separator[1]] == '-':
                 continue
 
             yield actual_succ_posn
 
     def get_or_create_cell(self, row, col):
         if not self.cells[row][col]:
-            self.cells[row][col] = Cell(row, col,
-                                        self.grid[row * 2 + 1][col * 2 + 1])
+            self.cells[row][col] = Cell(self, row, col,
+                                        self.input_grid[row * 2 + 1][col * 2 + 1])
 
         return self.cells[row][col]
 
@@ -128,22 +128,50 @@ class GameGrid(object):
             for cidx, cell in enumerate(row):
                 if not cell.has_value():
                     if complete:
-                        print('GRID - Completion check. 0 not valid')
                         return False
                     continue
                 
                 if cell.value in row_seen[ridx]:
                     if cidx - row_seen[ridx][cell.value] <= cell.value:
-                        print('GRID - ROW repeated value not enough distance far', row_seen[ridx][cell.value], cidx, cell.value)
                         return False
                 row_seen[ridx][cell.value] = cidx
 
                 if cell.value in col_seen[cidx]:
                     if ridx - col_seen[cidx][cell.value] <= cell.value:
-                        print('GRID - COL repeated value not enough distance far')
                         return False
 
                 col_seen[cidx][cell.value] = ridx
+
+        return True
+
+
+    def check_row_valid(self, row):
+        row_seen = {}
+        for cidx, cell in enumerate(self.cells[row]):
+            if not cell.has_value():
+                continue
+
+            if cell.value in row_seen:
+                if cidx - row_seen[cell.value] <= cell.value:
+                    return False
+
+            row_seen[cell.value] = cidx
+
+        return True
+
+    def check_column_valid(self, column):
+        column_seen = {}
+        for ridx in range(self.row_count):
+            cell = self.cells[ridx][column]
+            
+            if not cell.has_value():
+                continue
+
+            if cell.value in column_seen:
+                if ridx - row_seen[cell.value] <= cell.value:
+                    return False
+
+            row_seen[cell.value] = column_seen
 
         return True
 
@@ -153,10 +181,8 @@ class GameGrid(object):
 
 
     def __str__(self):
-        s = ''
+        input_grid = self.input_grid
         for row in self.cells:
             for cell in row:
-                s += str(cell) + ' '
-            s += '\n'
-
-        return s.strip()
+                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(cell.value)
+        return '\n'.join([''.join(x) for x in input_grid])

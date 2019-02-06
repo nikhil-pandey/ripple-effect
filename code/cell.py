@@ -10,7 +10,8 @@ description: Exmaple Description
 
 class Cell(object):
 
-    def __init__(self, row, col, value):
+    def __init__(self, grid, row, col, value):
+        self.grid = grid
         self.row = row
         self.col = col
         self.room = None
@@ -23,13 +24,18 @@ class Cell(object):
         self.room = room
 
 
+    def assign_value(self, val):
+        old_val = self.value
+        self.value = val
+        if not (self.grid.check_row_valid(self.row) or self.grid.check_valid_column(self.column) or self.room.is_valid()):
+            self.value = old_val
+            raise ValueError()
+
     def has_value(self):
         return self.value is not None
 
-
     def get_possible_moves(self):
         return self.room.get_possible_moves()
-
 
     def __str__(self):
         return "Cell(%d)" % (self.value if self.value else 0)

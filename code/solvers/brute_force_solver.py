@@ -18,15 +18,10 @@ class BruteForceSolver(Solver):
 
     def solve(self, grid):
 
-        print()
-        print(grid)
-
         if not grid.is_valid():
-            print("The state is not valid")
             return None
         
         if grid.is_complete():
-            print("Complete")
             return grid
 
         cell = grid.get_next_empty_cell()
@@ -36,7 +31,6 @@ class BruteForceSolver(Solver):
             solution = self.solve(grid)
 
             if solution:
-                print("FOUND!!!")
                 return solution
 
         cell.value = None

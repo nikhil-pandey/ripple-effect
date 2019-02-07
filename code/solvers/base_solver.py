@@ -8,7 +8,7 @@ description: Solver Class
 """
 
 
-class Solver(object):
+class BaseSolver(object):
 
     def solve(self, grid):
         raise Exception

@@ -58,4 +58,6 @@ class Cell(object):
         return hash((self.row, self.col))
 
     def __str__(self):
+
+        # return "Cell(%d, [%s])" % (self.value if self.value else 0, ', '.join([str(x) for x in self.possible_moves]))
         return "Cell(%d)" % (self.value if self.value else 0)

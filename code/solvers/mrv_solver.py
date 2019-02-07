@@ -7,9 +7,9 @@ author: np7803@rit.edu Nikhil Pandey
 description: Brute Force Solver Class
 """
 
-from solver import Solver
+from .base_solver import BaseSolver
 
-class MRVSolver(Solver):
+class MRVSolver(BaseSolver):
 
     def __init__(self, recompute_moves=False, forward_checking=False):
         print("Using MRV")
@@ -29,15 +29,16 @@ class MRVSolver(Solver):
             
             return None
 
-        for val in cell.get_possible_moves():
+        for move in cell.possible_moves:
 
             try:
-                cell.assign_value(val)
+                cell.assign_value(move)
             
                 if self.recompute_moves:
                     removed = grid.recompute_moves(cell)
 
-                if self.forward_checking and not grid.check_forward():
+                if self.forward_checking and not grid.check_forward(cell):
+                    grid.patch_removed_values(removed)
                     continue
             
             except ValueError:

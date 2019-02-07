@@ -10,35 +10,29 @@ import sys
 import itertools
 from cell import Cell
 from room import Room
-from queue import PriorityQueue
 
 
 class GameGrid(object):
 
-    def __init__(self):
+    def __init__(self, file_name):
         """
         Read a maze from file.
 
         Returns:
                 2-D list containing the maze values.
         """
-        try:
-            file = sys.argv[1]
-            with open(file, 'r') as f:
-                self.row_count, self.column_count = (int(x) for x in f.readline().split())
-                self.input_grid = [list(l.rstrip('\n')) for idx, l in
-                             enumerate(f.readlines())]
+        with open(file_name, 'r') as f:
+            self.row_count, self.column_count = (int(x) for x in f.readline().split())
+            self.input_grid = [list(l.rstrip('\n')) for idx, l in
+                         enumerate(f.readlines())]
 
-            self.main_queue = set(itertools.product(range(0, self.row_count),
-                                                    range(0, self.column_count)))
+        self.main_queue = set(itertools.product(range(0, self.row_count),
+            range(0, self.column_count)))
 
-            self.cells = [[None for _ in range(0, self.column_count)] for __ in
-                          range(0, self.row_count)]
-            self.rooms = []
-
-        except (IndexError, FileNotFoundError):
-            print('Usage: python3 __main__.py <grid_file>')
-            sys.exit(1)
+        self.cells = [[None for _ in range(0, self.column_count)] for __ in
+                      range(0, self.row_count)]
+        
+        self.rooms = []
 
     def prepare_cells(self):
         while self.main_queue:
@@ -114,7 +108,6 @@ class GameGrid(object):
 
         return self.cells[row][col]
 
-
     def get_next_empty_cell(self):
         for row in self.cells:
             for cell in row:
@@ -126,7 +119,7 @@ class GameGrid(object):
         lowest_cell = None
         for row in self.cells:
             for cell in row:
-                if not cell.has_value() and (lowest_cell is None or len(cell.possible_moves) < lowest_count):
+                if (not cell.has_value()) and (lowest_cell is None or len(cell.possible_moves) < lowest_count):
                     lowest_count = len(cell.possible_moves)
                     lowest_cell = cell
 
@@ -174,7 +167,6 @@ class GameGrid(object):
     def is_solved(self):
         return self.is_valid(complete=True)
 
-
     def recompute_moves(self, cell):
         removed = []
         for room_cell in cell.room.cells:
@@ -212,9 +204,37 @@ class GameGrid(object):
         for cell, val in items:
             cell.add_possible_move(val)
 
+    def check_forward(self, cell):
+        for room_cell in cell.room.cells:
+            if cell == room_cell or room_cell.has_value():
+                continue
+            
+            if len(room_cell.possible_moves) == 0:
+                return False
+
+        for cidx in range(max(0, cell.col - cell.value), min(self.column_count, cell.col + cell.value + 1)):
+            this_cell = self.cells[cell.row][cidx]
+
+            if cell == this_cell or this_cell.has_value():
+                continue
+
+            if len(this_cell.possible_moves) == 0:
+                return False
+
+        for ridx in range(max(0, cell.row - cell.value), min(self.row_count, cell.row + cell.value + 1)):
+            this_cell = self.cells[ridx][cell.col]
+
+            if cell == this_cell or this_cell.has_value():
+                continue
+
+            if len(this_cell.possible_moves) == 0:
+                return False
+
+        return True
+
     def __str__(self):
         input_grid = self.input_grid
         for row in self.cells:
             for cell in row:
-                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(cell.value) if cell.value else ' '
+                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(cell.value) if cell.value else 'x'
         return '\n'.join([''.join(x) for x in input_grid])

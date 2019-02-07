@@ -7,10 +7,9 @@ author: np7803@rit.edu Nikhil Pandey
 description: Brute Force Solver Class
 """
 
-from solver import Solver
+from .base_solver import BaseSolver
 
-
-class BruteForceSolver(Solver):
+class BruteForceSolver(BaseSolver):
 
     def __init__(self):
         print("Using brute force")

@@ -13,6 +13,7 @@ from solver import Solver
 class BruteForceSolver(Solver):
 
     def __init__(self):
+        print("Using brute force")
         pass
 
     def solve(self, grid):

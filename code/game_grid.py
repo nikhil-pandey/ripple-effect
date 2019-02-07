@@ -174,6 +174,44 @@ class GameGrid(object):
     def is_solved(self):
         return self.is_valid(complete=True)
 
+
+    def recompute_moves(self, cell):
+        removed = []
+        for room_cell in cell.room.cells:
+            if cell == room_cell or room_cell.has_value():
+                continue
+            
+            if cell.value in room_cell.possible_moves:
+                room_cell.possible_moves.discard(cell.value)
+                removed.append((room_cell, cell.value))
+
+        for cidx in range(max(0, cell.col - cell.value), min(self.column_count, cell.col + cell.value + 1)):
+            this_cell = self.cells[cell.row][cidx]
+
+            if cell == this_cell or this_cell.has_value():
+                continue
+
+            if cell.value in this_cell.possible_moves:
+                this_cell.possible_moves.discard(cell.value)
+                removed.append((this_cell, cell.value))
+
+        for ridx in range(max(0, cell.row - cell.value), min(self.row_count, cell.row + cell.value + 1)):
+            this_cell = self.cells[ridx][cell.col]
+
+            if cell == this_cell or this_cell.has_value():
+                continue
+
+            if cell.value in this_cell.possible_moves:
+                this_cell.possible_moves.discard(cell.value)
+                removed.append((this_cell, cell.value))
+
+        return removed
+
+
+    def patch_removed_values(self, items):
+        for cell, val in items:
+            cell.add_possible_move(val)
+
     def __str__(self):
         input_grid = self.input_grid
         for row in self.cells:

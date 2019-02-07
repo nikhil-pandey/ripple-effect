@@ -19,7 +19,7 @@ class Room(object):
     def is_valid(self, complete=False):
 
         val_seen = {}
-        
+
         for cell in self.cells:
             if cell.value in val_seen:
                 return False

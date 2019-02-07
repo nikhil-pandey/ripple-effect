@@ -31,13 +31,13 @@ class Cell(object):
         if val is None:
             self.value = None
             return
-        
+
         old_val = self.value
         self.value = val
-        
+
         if self.grid.validate_rows_cols(self) and self.room.is_valid():
             return
-        
+
         self.value = old_val
         raise ValueError()
 
@@ -47,10 +47,6 @@ class Cell(object):
     def get_possible_moves(self):
         return self.possible_moves
 
-
-    def __lt__(self, other):
-        return True
-
     def __eq__(self, other):
         return self.row == other.row and self.col == other.col
 
@@ -58,6 +54,6 @@ class Cell(object):
         return hash((self.row, self.col))
 
     def __str__(self):
-
-        # return "Cell(%d, [%s])" % (self.value if self.value else 0, ', '.join([str(x) for x in self.possible_moves]))
+        # return "Cell(%d, [%s])" % (self.value if self.value else 0, ',
+        # '.join([str(x) for x in self.possible_moves]))
         return "Cell(%d)" % (self.value if self.value else 0)

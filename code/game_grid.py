@@ -22,16 +22,16 @@ class GameGrid(object):
                 2-D list containing the maze values.
         """
         with open(file_name, 'r') as f:
-            self.row_count, self.column_count = (int(x) for x in f.readline().split())
-            self.input_grid = [list(l.rstrip('\n')) for idx, l in
-                         enumerate(f.readlines())]
+            self.row_count, self.column_count = (int(x) for x in
+                                                 f.readline().split())
+            self.input_grid = [list(l.rstrip('\n')) for l in f.readlines()]
 
         self.main_queue = set(itertools.product(range(0, self.row_count),
-            range(0, self.column_count)))
+                                                range(0, self.column_count)))
 
         self.cells = [[None for _ in range(0, self.column_count)] for __ in
                       range(0, self.row_count)]
-        
+
         self.rooms = []
 
     def prepare_cells(self):
@@ -59,7 +59,7 @@ class GameGrid(object):
                         room.add_cell(new_cell)
                         self.main_queue.discard((row, col))
                         room_queue.append((row, col))
-        
+
         for room in self.rooms:
             count = len(room.cells) + 1
             for cell in room.cells:
@@ -104,7 +104,8 @@ class GameGrid(object):
     def get_or_create_cell(self, row, col):
         if not self.cells[row][col]:
             self.cells[row][col] = Cell(self, row, col,
-                                        self.input_grid[row * 2 + 1][col * 2 + 1])
+                                        self.input_grid[row * 2 + 1][
+                                            col * 2 + 1])
 
         return self.cells[row][col]
 
@@ -119,12 +120,13 @@ class GameGrid(object):
         lowest_cell = None
         for row in self.cells:
             for cell in row:
-                if (not cell.has_value()) and (lowest_cell is None or len(cell.possible_moves) < lowest_count):
+                if (not cell.has_value()) and \
+                        (lowest_cell is None or
+                         len(cell.possible_moves) < lowest_count):
                     lowest_count = len(cell.possible_moves)
                     lowest_cell = cell
 
         return lowest_cell
-
 
     def is_valid(self, complete=False):
         for room in self.rooms:
@@ -139,7 +141,7 @@ class GameGrid(object):
                     if complete:
                         return False
                     continue
-                
+
                 if cell.value in row_seen[ridx]:
                     if cidx - row_seen[ridx][cell.value] <= cell.value:
                         return False
@@ -154,12 +156,16 @@ class GameGrid(object):
         return True
 
     def validate_rows_cols(self, cell):
-        for cidx in range(max(0, cell.col - cell.value), min(self.column_count, cell.col + cell.value + 1)):
-            if cidx != cell.col and cell.value == self.cells[cell.row][cidx].value:
+        for cidx in range(max(0, cell.col - cell.value),
+                          min(self.column_count, cell.col + cell.value + 1)):
+            if cidx != cell.col and \
+                    cell.value == self.cells[cell.row][cidx].value:
                 return False
 
-        for ridx in range(max(0, cell.row - cell.value), min(self.row_count, cell.row + cell.value + 1)):
-            if ridx != cell.row and cell.value == self.cells[ridx][cell.col].value:
+        for ridx in range(max(0, cell.row - cell.value),
+                          min(self.row_count, cell.row + cell.value + 1)):
+            if ridx != cell.row and \
+                    cell.value == self.cells[ridx][cell.col].value:
                 return False
 
         return True
@@ -172,12 +178,13 @@ class GameGrid(object):
         for room_cell in cell.room.cells:
             if cell == room_cell or room_cell.has_value():
                 continue
-            
+
             if cell.value in room_cell.possible_moves:
                 room_cell.possible_moves.discard(cell.value)
                 removed.append((room_cell, cell.value))
 
-        for cidx in range(max(0, cell.col - cell.value), min(self.column_count, cell.col + cell.value + 1)):
+        for cidx in range(max(0, cell.col - cell.value),
+                          min(self.column_count, cell.col + cell.value + 1)):
             this_cell = self.cells[cell.row][cidx]
 
             if cell == this_cell or this_cell.has_value():
@@ -187,7 +194,8 @@ class GameGrid(object):
                 this_cell.possible_moves.discard(cell.value)
                 removed.append((this_cell, cell.value))
 
-        for ridx in range(max(0, cell.row - cell.value), min(self.row_count, cell.row + cell.value + 1)):
+        for ridx in range(max(0, cell.row - cell.value),
+                          min(self.row_count, cell.row + cell.value + 1)):
             this_cell = self.cells[ridx][cell.col]
 
             if cell == this_cell or this_cell.has_value():
@@ -199,7 +207,6 @@ class GameGrid(object):
 
         return removed
 
-
     def patch_removed_values(self, items):
         for cell, val in items:
             cell.add_possible_move(val)
@@ -208,11 +215,12 @@ class GameGrid(object):
         for room_cell in cell.room.cells:
             if cell == room_cell or room_cell.has_value():
                 continue
-            
+
             if len(room_cell.possible_moves) == 0:
                 return False
 
-        for cidx in range(max(0, cell.col - cell.value), min(self.column_count, cell.col + cell.value + 1)):
+        for cidx in range(max(0, cell.col - cell.value),
+                          min(self.column_count, cell.col + cell.value + 1)):
             this_cell = self.cells[cell.row][cidx]
 
             if cell == this_cell or this_cell.has_value():
@@ -221,7 +229,8 @@ class GameGrid(object):
             if len(this_cell.possible_moves) == 0:
                 return False
 
-        for ridx in range(max(0, cell.row - cell.value), min(self.row_count, cell.row + cell.value + 1)):
+        for ridx in range(max(0, cell.row - cell.value),
+                          min(self.row_count, cell.row + cell.value + 1)):
             this_cell = self.cells[ridx][cell.col]
 
             if cell == this_cell or this_cell.has_value():
@@ -236,5 +245,6 @@ class GameGrid(object):
         input_grid = self.input_grid
         for row in self.cells:
             for cell in row:
-                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(cell.value) if cell.value else 'x'
+                input_grid[cell.row * 2 + 1][cell.col * 2 + 1] = str(
+                    cell.value) if cell.value else 'x'
         return '\n'.join([''.join(x) for x in input_grid])

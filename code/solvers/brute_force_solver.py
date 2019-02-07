@@ -9,22 +9,20 @@ description: Brute Force Solver Class
 
 from .base_solver import BaseSolver
 
+
 class BruteForceSolver(BaseSolver):
 
     def __init__(self):
         print("Using brute force")
-        pass
 
     def solve(self, grid):
 
-
         cell = grid.get_next_empty_cell()
-
 
         if cell is None:
             if grid.is_solved():
                 return grid
-            
+
             return None
 
         for val in cell.get_possible_moves():
@@ -33,7 +31,7 @@ class BruteForceSolver(BaseSolver):
                 cell.assign_value(val)
             except ValueError:
                 continue
-            
+
             solution = self.solve(grid)
 
             if solution:

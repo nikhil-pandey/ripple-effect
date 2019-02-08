@@ -27,6 +27,12 @@ class Cell(object):
     def add_possible_move(self, val):
         self.possible_moves.add(val)
 
+    def remove_possible_move(self, val):
+        self.possible_moves.discard(val)
+
+    def has_possible_moves(self):
+        return len(self.possible_moves) > 0
+
     def assign_value(self, val):
         if val is None:
             self.value = None
@@ -52,6 +58,9 @@ class Cell(object):
 
     def __hash__(self):
         return hash((self.row, self.col))
+
+    def __repr__(self):
+        return 'Cell(%d,%d,%s)' % (self.row, self.col, str(self.value) if not None else 'x')
 
     def __str__(self):
         # return "Cell(%d, [%s])" % (self.value if self.value else 0, ',

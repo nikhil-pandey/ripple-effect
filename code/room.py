@@ -12,9 +12,18 @@ class Room(object):
 
     def __init__(self):
         self.cells = set()
+        self.possible_options = {}
+        self.size = 0
 
     def add_cell(self, cell):
+        self.size += 1
         self.cells.add(cell)
+
+    def add_possible_move(self, number, cell):
+        self.possible_options[number].add(cell)
+
+    def remove_possible_move(self, number, cell):
+        self.possible_options[number].discard(cell)
 
     def is_valid(self, complete=False):
 

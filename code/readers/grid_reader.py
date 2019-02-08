@@ -1,44 +1,30 @@
 __author__ = 'Nikhil Pandey'
 
 """
-file: maze23.py
+file: grid_reader.py
 Author: Nikhil Pandey np7803@rit.edu
 Description: Maze solver
 """
 
-import sys
 import itertools
 from cell import Cell
 from room import Room
+from .base_reader import BaseReader
 
 
-class GameGrid(object):
+class GridReader(BaseReader):
 
     def __init__(self, file_name):
-        """
-        Read a maze from file.
-
-        Returns:
-                2-D list containing the maze values.
-        """
-        with open(file_name, 'r') as f:
-            self.row_count, self.column_count = (int(x) for x in
-                                                 f.readline().split())
-            self.input_grid = [list(l.rstrip('\n')) for l in f.readlines()]
-
-        self.main_queue = set(itertools.product(range(0, self.row_count),
-                                                range(0, self.column_count)))
-
-        self.cells = [[None for _ in range(0, self.column_count)] for __ in
-                      range(0, self.row_count)]
-
+        super().__init__(file_name)
         self.rooms = []
 
-    def prepare_cells(self):
-        while self.main_queue:
+    def prepare(self):
+        main_queue = set(itertools.product(range(0, self.row_count),
+                                           range(0, self.column_count)))
+        while main_queue:
             room = Room()
             self.rooms.append(room)
-            cell = self.get_or_create_cell(*self.main_queue.pop())
+            cell = self.get_or_create_cell(*main_queue.pop())
             cell.assign_room(room)
             room.add_cell(cell)
 
@@ -57,13 +43,18 @@ class GameGrid(object):
                         new_cell = self.get_or_create_cell(row, col)
                         new_cell.assign_room(room)
                         room.add_cell(new_cell)
-                        self.main_queue.discard((row, col))
+                        main_queue.discard((row, col))
                         room_queue.append((row, col))
+
+        self.rooms.sort(key=lambda x: x.size, reverse=True)
 
         for room in self.rooms:
             count = len(room.cells) + 1
-            for cell in room.cells:
-                cell.possible_moves = set(range(1, count))
+            for number in range(1, count):
+                room.possible_options[number] = set()
+                for cell in room.cells:
+                    room.possible_options[number].add(cell)
+                    cell.possible_moves.add(number)
 
     def get_successors(self, position):
         """
@@ -115,7 +106,23 @@ class GameGrid(object):
                 if not cell.has_value():
                     return cell
 
+    def get_next_mrv_with_humane_check(self):
+        lowest_count = 0
+        lowest_cell = None
+        for room in self.rooms:
+            for cell in room.cells:
+                if (not cell.has_value()) and \
+                        (lowest_cell is None or
+                         len(cell.possible_moves) < lowest_count):
+                    lowest_count = len(cell.possible_moves)
+                    lowest_cell = cell
+        print(repr(lowest_cell), lowest_count)
+        return lowest_cell
+
     def get_next_mrv_cell(self):
+        if self.humane_check:
+            return self.get_next_mrv_with_humane_check()
+
         lowest_count = 0
         lowest_cell = None
         for row in self.cells:
@@ -125,7 +132,8 @@ class GameGrid(object):
                          len(cell.possible_moves) < lowest_count):
                     lowest_count = len(cell.possible_moves)
                     lowest_cell = cell
-
+        print(repr(lowest_cell), lowest_count)
+        a = input()
         return lowest_cell
 
     def is_valid(self, complete=False):
@@ -174,14 +182,21 @@ class GameGrid(object):
         return self.is_valid(complete=True)
 
     def recompute_moves(self, cell):
+
+        if not self.check_moves:
+            return [], True
+
         removed = []
         for room_cell in cell.room.cells:
             if cell == room_cell or room_cell.has_value():
                 continue
 
             if cell.value in room_cell.possible_moves:
-                room_cell.possible_moves.discard(cell.value)
+                room_cell.remove_possible_move(cell.value)
+                room_cell.room.remove_possible_move(cell.value, room_cell)
                 removed.append((room_cell, cell.value))
+                if not room_cell.has_possible_moves():
+                    return removed, False
 
         for cidx in range(max(0, cell.col - cell.value),
                           min(self.column_count, cell.col + cell.value + 1)):
@@ -191,8 +206,11 @@ class GameGrid(object):
                 continue
 
             if cell.value in this_cell.possible_moves:
-                this_cell.possible_moves.discard(cell.value)
+                this_cell.remove_possible_move(cell.value)
+                this_cell.room.remove_possible_move(cell.value, this_cell)
                 removed.append((this_cell, cell.value))
+                if not this_cell.has_possible_moves():
+                    return removed, False
 
         for ridx in range(max(0, cell.row - cell.value),
                           min(self.row_count, cell.row + cell.value + 1)):
@@ -202,20 +220,18 @@ class GameGrid(object):
                 continue
 
             if cell.value in this_cell.possible_moves:
-                this_cell.possible_moves.discard(cell.value)
+                this_cell.remove_possible_move(cell.value)
+                this_cell.room.remove_possible_move(cell.value, this_cell)
                 removed.append((this_cell, cell.value))
+                if not this_cell.has_possible_moves():
+                    return removed, False
 
-        return removed
+        return removed, True
 
     def patch_removed_values(self, items):
         for cell, val in items:
+            cell.room.add_possible_move(val, cell)
             cell.add_possible_move(val)
-
-    def check_forward(self, removed):
-        for cell, val in removed:
-            if len(cell.possible_moves) == 0:
-                    return False
-        return True
 
     def __str__(self):
         input_grid = self.input_grid

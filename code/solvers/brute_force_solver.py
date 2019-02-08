@@ -8,13 +8,14 @@ description: Brute Force Solver Class
 """
 
 from .base_solver import BaseSolver
-
+from helpers import *
 
 class BruteForceSolver(BaseSolver):
 
     def __init__(self):
         print("Using brute force")
 
+    @count
     def solve(self, grid):
 
         cell = grid.get_next_empty_cell()

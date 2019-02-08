@@ -8,7 +8,7 @@ description: Brute Force Solver Class
 """
 
 from .base_solver import BaseSolver
-
+from helpers import *
 
 class MRVSolver(BaseSolver):
 
@@ -19,7 +19,7 @@ class MRVSolver(BaseSolver):
 
         if self.forward_checking:
             self.recompute_moves = True
-
+    @count
     def solve(self, grid):
 
         cell = grid.get_next_mrv_cell()
@@ -38,7 +38,7 @@ class MRVSolver(BaseSolver):
                 if self.recompute_moves:
                     removed = grid.recompute_moves(cell)
 
-                if self.forward_checking and not grid.check_forward(cell):
+                if self.forward_checking and not grid.check_forward(removed):
                     grid.patch_removed_values(removed)
                     continue
 

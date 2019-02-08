@@ -37,6 +37,7 @@ try:
     grid.prepare_cells()
     solved_grid = solver.solve(grid)
     print(solved_grid)
+    print("Solve called: ", solver.solve.calls, " times")
 
 except (IndexError, FileNotFoundError):
     print('Usage: python3 __main__.py <grid_file>')

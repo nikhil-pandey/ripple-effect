@@ -211,34 +211,10 @@ class GameGrid(object):
         for cell, val in items:
             cell.add_possible_move(val)
 
-    def check_forward(self, cell):
-        for room_cell in cell.room.cells:
-            if cell == room_cell or room_cell.has_value():
-                continue
-
-            if len(room_cell.possible_moves) == 0:
-                return False
-
-        for cidx in range(max(0, cell.col - cell.value),
-                          min(self.column_count, cell.col + cell.value + 1)):
-            this_cell = self.cells[cell.row][cidx]
-
-            if cell == this_cell or this_cell.has_value():
-                continue
-
-            if len(this_cell.possible_moves) == 0:
-                return False
-
-        for ridx in range(max(0, cell.row - cell.value),
-                          min(self.row_count, cell.row + cell.value + 1)):
-            this_cell = self.cells[ridx][cell.col]
-
-            if cell == this_cell or this_cell.has_value():
-                continue
-
-            if len(this_cell.possible_moves) == 0:
-                return False
-
+    def check_forward(self, removed):
+        for cell, val in removed:
+            if len(cell.possible_moves) == 0:
+                    return False
         return True
 
     def __str__(self):

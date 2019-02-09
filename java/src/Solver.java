@@ -14,22 +14,22 @@ public class Solver {
      */
     private final CellSelector cellSelector;
 
-    private final CellSorter variableSorter;
+    private final CellSorter cellSorter;
     private final ValueSorter valueSorter;
     private final Pruner pruner;
 
     public Solver( Validator validator, CellSelector cellSelector,
-                   CellSorter variableSorter, ValueSorter valueSorter,
+                   CellSorter cellSorter, ValueSorter valueSorter,
                    Pruner pruner ) {
         this.validator = validator;
         this.cellSelector = cellSelector;
-        this.variableSorter = variableSorter;
+        this.cellSorter = cellSorter;
         this.valueSorter = valueSorter;
         this.pruner = pruner;
     }
 
     public Grid solve( Grid grid ) {
-        Cell cell = this.cellSelector.next( grid, this.variableSorter );
+        Cell cell = this.cellSelector.next( grid, this.cellSorter );
 
         if ( cell == null ) {
             return grid;

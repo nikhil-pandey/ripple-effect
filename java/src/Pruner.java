@@ -3,7 +3,7 @@ import java.util.Map;
 
 
 public interface Pruner {
-    List< Map<Cell, Integer>> prune( Grid grid, Cell cell );
-
     boolean isSuccessful();
+
+    List< Map< Cell, Integer > > prune( Grid grid, Cell cell );
 }

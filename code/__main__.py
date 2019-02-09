@@ -8,7 +8,6 @@ Description: Maze solver
 
 from solvers import *
 from readers import *
-import sys
 
 while True:
     print('Which solver do you want to use?')
@@ -16,7 +15,9 @@ while True:
     print('2: Vanilla MRV')
     print('3: MRV and track numbers')
     print('4: MRV and track numbers and forward checking')
-    print('5: MRV and track numbers and forward checking and human-like checking')
+    print(
+        '5: MRV and track numbers and forward checking and human-like '
+        'checking')
     i = input('>')
 
     if i == '1':
@@ -35,7 +36,7 @@ while True:
     file_name = input('Enter the file name: ').strip()
     break
 
-grid = BitReader(file_name) # if isinstance(solver, BruteForceSolver) else GridReader(file_name)
+grid = GridReader(file_name)
 grid.prepare()
 solved_grid = solver.solve(grid)
 print(solved_grid)

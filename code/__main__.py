@@ -35,6 +35,7 @@ while True:
     file_name = input('Enter the file name: ').strip()
     break
 
-grid = BitReader(file_name) if isinstance(solver, BruteForceSolver) else GridReader(file_name)
+grid = BitReader(file_name) # if isinstance(solver, BruteForceSolver) else GridReader(file_name)
 grid.prepare()
 solved_grid = solver.solve(grid)
+print(solved_grid)

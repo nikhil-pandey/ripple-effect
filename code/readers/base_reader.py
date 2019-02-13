@@ -15,16 +15,18 @@ class BaseReader(object):
 
     def __init__(self, file_name):
         with open(file_name, 'r') as f:
-            self.row_count, self.column_count = (int(x) for x in
-                                                 f.readline().split())
-            self.input_grid = [list(l.rstrip('\n')) for l in f.readlines()]
+            self._row_count, self._column_count = (int(x) for x in
+                                                   f.readline().split())
+            self._input_grid = [list(l.rstrip('\n')) for l in f.readlines()]
 
-        self.cells = [[None for _ in range(0, self.column_count)] for __ in
-                      range(0, self.row_count)]
+        self._cell_count = self._row_count * self._column_count
 
-        self.humane_check = True
-        self.check_moves = True
-        self.forward_checking = True
+        self._cells = [[None for _ in range(0, self._column_count)] for __ in
+                       range(0, self._row_count)]
+
+        self._humane_check = True
+        self._check_moves = True
+        self._forward_checking = True
 
     def prepare(self):
         pass

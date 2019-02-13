@@ -8,6 +8,9 @@ Description: Maze solver
 
 from solvers import *
 from readers import *
+from comparators import *
+from validators import *
+from helpers import *
 
 while True:
     print('Which solver do you want to use?')
@@ -23,13 +26,32 @@ while True:
     if i == '1':
         solver = BruteForceSolver()
     elif i == '2':
-        solver = MRVSolver()
+        solver = MRVSolver(
+            next_mrv_cell,
+            default_next_move,
+            localized_validator,
+        )
     elif i == '3':
-        solver = MRVSolver()
+        solver = MRVSolver(
+            next_mrv_cell,
+            default_next_move,
+            localized_validator,
+            recompute_moves,
+        )
     elif i == '4':
-        solver = MRVSolver()
+        solver = MRVSolver(
+            next_mrv_cell,
+            default_next_move,
+            localized_validator,
+            recompute_moves,
+        )
     elif i == '5':
-        solver = MRVSolver()
+        solver = MRVSolver(
+            next_mrv_cell,
+            default_next_move,
+            localized_validator,
+            recompute_moves,
+        )
     else:
         continue
 

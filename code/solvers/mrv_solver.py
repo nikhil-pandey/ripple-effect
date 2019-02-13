@@ -13,36 +13,36 @@ from helpers import *
 
 class MRVSolver(BaseSolver):
 
-    def __init__(self):
+    def __init__(self, cell_selector, move_selector, validator, pruner):
+        self._pruner = pruner
+        self._validator = validator
+        self._move_selector = move_selector
+        self._cell_selector = cell_selector
         print("Using MRV")
 
     @count
     def solve(self, grid):
-        print("Call count: ", self.solve.calls)
-        cell = grid.get_next_mrv_cell()
+        cell = self._cell_selector(grid.get_cells())
 
         if cell is None:
-            if grid.is_solved():
-                return grid
+            return grid
 
-            return None
-
-        for move in cell.get_possible_moves():
-            try:
-                cell.assign_value(move)
-            except ValueError:
+        for move in self._move_selector(cell):
+            if not self._validator(grid, cell, move):
                 continue
 
-            cell.room.remove_possible_move(cell.value, cell)
-            removed, should_continue = grid.recompute_moves(cell)
+            cell.assign_value(move)
+            cell.get_room().remove_move(cell.get_value(), cell)
+
+            pruned, should_continue = self._pruner(grid, cell)
 
             if should_continue:
                 solution = self.solve(grid)
                 if solution:
                     return solution
 
-            cell.room.add_possible_move(move, cell)
-            grid.patch_removed_values(removed)
+            patch_removed_values(pruned)
 
         cell.assign_value(None)
+
         return None

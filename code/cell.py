@@ -1,7 +1,7 @@
 __author__ = 'Nikhil Pandey'
 
 """
-file: file.py
+file: cell.py
 language: python3
 author: np7803@rit.edu Nikhil Pandey
 description: Exmaple Description
@@ -10,59 +10,57 @@ description: Exmaple Description
 
 class Cell(object):
 
-    def __init__(self, grid, row, col, value):
-        self.grid = grid
-        self.row = row
-        self.col = col
-        self.possible_moves = set()
-        self.room = None
-        self.value = None
+    def __init__(self, row, col, value):
+        self._row = row
+        self._col = col
+        self._possible_moves = set()
+        self._room = None
+        self._value = value
 
-        if value != '.':
-            self.value = int(value)
+    def get_row(self):
+        return self._row
+
+    def get_column(self):
+        return self._col
 
     def assign_room(self, room):
-        self.room = room
+        self._room = room
 
-    def add_possible_move(self, val):
-        self.possible_moves.add(val)
+    def add_move(self, val):
+        self._possible_moves.add(val)
 
-    def remove_possible_move(self, val):
-        self.possible_moves.discard(val)
+    def remove_move(self, val):
+        self._possible_moves.discard(val)
 
-    def has_possible_moves(self):
-        return len(self.possible_moves) > 0
+    def get_move_count(self):
+        return len(self._possible_moves)
+
+    def has_moves(self):
+        return self.get_move_count() > 0
 
     def assign_value(self, val):
-        if val is None:
-            self.value = None
-            return
-
-        old_val = self.value
-        self.value = val
-
-        if self.grid.validate_rows_cols(self) and self.room.is_valid():
-            return
-
-        self.value = old_val
-        raise ValueError()
+        self._value = val
 
     def has_value(self):
-        return self.value is not None
+        return self._value is not None
 
-    def get_possible_moves(self):
-        return self.possible_moves
+    def get_moves(self):
+        return self._possible_moves
+
+    def get_room(self):
+        return self._room
+
+    def get_value(self):
+        return self._value
 
     def __eq__(self, other):
-        return self.row == other.row and self.col == other.col
+        return self._row == other._row and self._col == other._col
 
     def __hash__(self):
-        return hash((self.row, self.col))
+        return hash((self._row, self._col))
 
     def __repr__(self):
-        return 'Cell(%d,%d,%s)' % (self.row, self.col, str(self.value) if not None else 'x')
+        return 'Cell(%d,%d,%s)' % (self._row, self._col, str(self._value) if not None else 'x')
 
     def __str__(self):
-        # return "Cell(%d, [%s])" % (self.value if self.value else 0, ',
-        # '.join([str(x) for x in self.possible_moves]))
-        return "Cell(%d)" % (self.value if self.value else 0)
+        return "Cell(%d)" % (self._value if self._value else 0)

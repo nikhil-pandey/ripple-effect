@@ -1,7 +1,7 @@
 __author__ = 'Nikhil Pandey'
 
 """
-file: room.py
+file: _room.py
 language: python3
 author: np7803@rit.edu Nikhil Pandey
 description: Exmaple Description
@@ -11,25 +11,29 @@ description: Exmaple Description
 class Room(object):
 
     def __init__(self):
-        self.cells = set()
-        self.possible_options = {}
-        self.size = 0
+        self._cells = set()
+        self._possible_options = {}
+        self._size = 0
 
     def add_cell(self, cell):
-        self.size += 1
-        self.cells.add(cell)
+        self._cells.add(cell)
 
-    def add_possible_move(self, number, cell):
-        self.possible_options[number].add(cell)
+    def add_move(self, number, cell):
+        if number not in self._possible_options:
+            self._possible_options[number] = set()
 
-    def remove_possible_move(self, number, cell):
-        self.possible_options[number].discard(cell)
+        self._possible_options[number].add(cell)
+
+    def remove_move(self, number, cell):
+        if number not in self._possible_options:
+            return
+        self._possible_options[number].discard(cell)
 
     def is_valid(self, complete=False):
 
         val_seen = {}
 
-        for cell in self.cells:
+        for cell in self._cells:
             if cell.value in val_seen:
                 return False
 
@@ -38,9 +42,15 @@ class Room(object):
                     return False
                 continue
 
-            if cell.value < 0 or cell.value > len(self.cells):
+            if cell.value < 0 or cell.value > len(self._cells):
                 return False
 
             val_seen[cell.value] = 1
 
         return True
+
+    def get_size(self):
+        return len(self._cells)
+
+    def get_cells(self):
+        return self._cells

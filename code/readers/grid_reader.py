@@ -17,6 +17,7 @@ class GridReader(BaseReader):
     def __init__(self, file_name):
         super().__init__(file_name)
         self._rooms = []
+        self.prepare()
 
     def prepare(self):
 
@@ -57,7 +58,7 @@ class GridReader(BaseReader):
             for number in range(1, room.get_size() + 1):
                 for cell in room.get_cells():
                     if cell.has_value():
-                        # And prune values
+                        # TODO: And prune values
                         continue
                     room.add_move(number, cell)
                     cell.add_move(number)
@@ -97,28 +98,5 @@ class GridReader(BaseReader):
 
         return self._cells[row][col]
 
-    def is_solved(self):
-        return self.is_valid(complete=True)
-
     def get_rooms(self):
         return self._rooms
-
-    def get_row_count(self):
-        return self._row_count
-
-    def get_column_count(self):
-        return self._column_count
-
-    def get_cells(self):
-        return self._cells
-
-    def get_cell(self, row, col):
-        return self._cells[row][col]
-
-    def __str__(self):
-        input_grid = self._input_grid
-        for row in self._cells:
-            for cell in row:
-                input_grid[cell.get_row() * 2 + 1][cell.get_column() * 2 + 1] = str(
-                    cell.get_value()) if cell.has_value() else 'x'
-        return '\n'.join([''.join(x) for x in input_grid])

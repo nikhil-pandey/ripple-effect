@@ -1,26 +1,24 @@
 __author__ = 'Nikhil Pandey'
 
 """
-file: mrv_solver.py
+file: solver.py
 language: python3
 author: np7803@rit.edu Nikhil Pandey
-description: Brute Force Solver Class
+description: Solver Class
 """
 
-from .base_solver import BaseSolver
 from helpers import *
+from pruners.forward_pruner import patch_removed_values
 
 
-class MRVSolver(BaseSolver):
+class Solver(object):
 
     def __init__(self, cell_selector, move_selector, validator, pruner):
-        self._pruner = pruner
-        self._validator = validator
-        self._move_selector = move_selector
         self._cell_selector = cell_selector
-        print("Using MRV")
+        self._move_selector = move_selector
+        self._validator = validator
+        self._pruner = pruner
 
-    @count
     def solve(self, grid):
         cell = self._cell_selector(grid.get_cells())
 

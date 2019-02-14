@@ -10,7 +10,7 @@ from solvers import *
 from readers import *
 from comparators import *
 from validators import *
-from helpers import *
+from pruners import *
 
 while True:
     print('Which solver do you want to use?')
@@ -24,33 +24,39 @@ while True:
     i = input('>')
 
     if i == '1':
-        solver = BruteForceSolver()
+        solver = Solver(
+            next_empty_cell,
+            default_next_move,
+            naive_validator,
+            forward_pruner,
+        )
     elif i == '2':
-        solver = MRVSolver(
+        solver = Solver(
             next_mrv_cell,
             default_next_move,
             localized_validator,
+            forward_pruner,
         )
     elif i == '3':
-        solver = MRVSolver(
+        solver = Solver(
             next_mrv_cell,
             default_next_move,
             localized_validator,
-            recompute_moves,
+            forward_pruner,
         )
     elif i == '4':
-        solver = MRVSolver(
+        solver = Solver(
             next_mrv_cell,
             default_next_move,
             localized_validator,
-            recompute_moves,
+            forward_pruner,
         )
     elif i == '5':
-        solver = MRVSolver(
+        solver = Solver(
             next_mrv_cell,
             default_next_move,
             localized_validator,
-            recompute_moves,
+            default_pruner,
         )
     else:
         continue
@@ -59,6 +65,9 @@ while True:
     break
 
 grid = GridReader(file_name)
-grid.prepare()
 solved_grid = solver.solve(grid)
-print(solved_grid)
+print('Called ', Solver.solve.calls)
+# from visualizer import Visualizer
+# vis = Visualizer(solved_grid, 1, None, Solver.solve.grids)
+# vis.show_grid()
+# vis.animate_grid_solution()

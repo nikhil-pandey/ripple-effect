@@ -3,7 +3,7 @@ __author__ = 'Nikhil Pandey'
 """
 file: __main__.py
 Author: Nikhil Pandey np7803@rit.edu
-Description: Maze solver
+Description: 
 """
 
 from solvers import *
@@ -11,7 +11,12 @@ from readers import *
 from comparators import *
 from validators import *
 from pruners import *
+import logging
 
+# logging.basicConfig(level=# logging.DEBUG)
+
+
+log = []
 while True:
     print('Which solver do you want to use?')
     print('1: Brute Force Solver')
@@ -29,6 +34,7 @@ while True:
             default_next_move,
             naive_validator,
             forward_pruner,
+            log
         )
     elif i == '2':
         solver = Solver(
@@ -36,6 +42,7 @@ while True:
             default_next_move,
             localized_validator,
             forward_pruner,
+            log
         )
     elif i == '3':
         solver = Solver(
@@ -43,6 +50,7 @@ while True:
             default_next_move,
             localized_validator,
             forward_pruner,
+            log
         )
     elif i == '4':
         solver = Solver(
@@ -50,13 +58,15 @@ while True:
             default_next_move,
             localized_validator,
             forward_pruner,
+            log
         )
     elif i == '5':
         solver = Solver(
-            next_mrv_cell,
-            default_next_move,
+            next_human_like_mrv_cell,
+            human_like_next_move,
             localized_validator,
-            default_pruner,
+            forward_pruner,
+            log
         )
     else:
         continue
@@ -65,9 +75,14 @@ while True:
     break
 
 grid = GridReader(file_name)
+initial_grid = GridReader(str(grid))
 solved_grid = solver.solve(grid)
-print('Called ', Solver.solve.calls)
-# from visualizer import Visualizer
-# vis = Visualizer(solved_grid, 1, None, Solver.solve.grids)
-# vis.show_grid()
-# vis.animate_grid_solution()
+# with open('steps.log', 'w') as f:
+#     f.writelines([str(x) + '\n' for x in log])
+
+print(solved_grid)
+
+# from plotter import Plotter
+# p = Plotter(initial_grid, 1, log)
+# # p.show_grid()
+# p.animate()

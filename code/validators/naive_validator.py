@@ -3,24 +3,21 @@ def naive_validator(grid, cell, value):
         if room_cell.get_value() == value:
             return False
 
-    row_seen = [{} for _ in range(grid.get_row_count())]
-    col_seen = [{} for _ in range(grid.get_column_count())]
-    for r_idx, row in enumerate(grid.get_cells()):
-        for c_idx, cell in enumerate(row):
-            if not cell.has_value():
-                continue
+    cells = grid.get_cells()
+    for check_cell in cells[cell.get_row()]:
+        if check_cell == cell:
+            continue
 
-            if cell.get_value() in row_seen[r_idx]:
-                if c_idx - row_seen[r_idx][cell.get_value()] <= cell.get_value():
-                    print('Already seen this value in the row')
-                    return False
-            row_seen[r_idx][cell.get_value()] = c_idx
+        if check_cell.get_value() == value and abs(check_cell.get_column() - cell.get_column()) <= value:
+            return False
 
-            if cell.get_value() in col_seen[c_idx]:
-                if r_idx - col_seen[c_idx][cell.get_value()] <= cell.get_value():
-                    print('Already seen the column')
-                    return False
+    for i in range(grid.get_row_count()):
+        check_cell = cells[i][cell.get_column()]
 
-            col_seen[c_idx][cell.get_value()] = r_idx
+        if check_cell == cell:
+            continue
+
+        if check_cell.get_value() == value and abs(i - cell.get_row()) <= value:
+            return False
 
     return True

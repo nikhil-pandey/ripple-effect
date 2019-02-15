@@ -10,6 +10,7 @@ from cell import Cell
 from room import Room
 from .base_reader import BaseReader
 from collections import deque
+from pruners import forward_pruner
 
 
 class GridReader(BaseReader):
@@ -23,7 +24,7 @@ class GridReader(BaseReader):
 
         main_visited = set()
         for i in range(0, self._cell_count):
-            row = i // self._row_count
+            row = i // self._column_count
             col = i - row * self._column_count
 
             if (row, col) in main_visited:
@@ -54,14 +55,18 @@ class GridReader(BaseReader):
 
         self._rooms.sort(key=lambda x: x.get_size(), reverse=True)
 
+        cell_having_values = []
         for room in self._rooms:
             for number in range(1, room.get_size() + 1):
                 for cell in room.get_cells():
                     if cell.has_value():
-                        # TODO: And prune values
+                        cell_having_values.append(cell)
                         continue
-                    room.add_move(number, cell)
                     cell.add_move(number)
+                    room.add_move(number, cell)
+
+        for cell in cell_having_values:
+            forward_pruner(self, cell)
 
     def get_successors(self, position):
         actual_grid_pos = position[0] * 2 + 1, position[1] * 2 + 1

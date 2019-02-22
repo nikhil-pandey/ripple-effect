@@ -3,7 +3,7 @@ from matplotlib import animation
 
 
 class Plotter(object):
-    def __init__(self, grid, cell_size, moves):
+    def __init__(self, grid, moves, cell_size=1, out_file=None):
         self.grid = grid
         self.cell_size = cell_size
         self.height = grid.get_row_count() * cell_size
@@ -11,13 +11,14 @@ class Plotter(object):
         self.ax = None
         self.texts = {}
         self.moves = moves
+        self.out_file = out_file
 
-    def show_grid(self):
-        fig = self.configure_plot()
-        self.make_grid(self.grid.get_cells())
+    def show_solution(self):
+        self.configure_plot()
+        self.__make_grid(self.grid.get_cells())
         plt.show()
 
-    def make_grid(self, cells):
+    def __make_grid(self, cells):
         row_count = len(cells)
         for i, row in enumerate(cells):
             for j, cell in enumerate(row):
@@ -27,39 +28,64 @@ class Plotter(object):
 
                 if cell.has_value():
                     self.texts[i * row_count + j] = \
-                        self.ax.text((2 * j + 0.7) * self.cell_size / 2, (2 * plot_i + 0.7) * self.cell_size / 2,
-                                     cell.get_value(), fontsize=10, weight='bold')
+                        self.ax.text((2 * j + 0.7) * self.cell_size / 2,
+                                     (2 * plot_i + 0.7) * self.cell_size / 2,
+                                     cell.get_value(), fontsize=10,
+                                     weight='bold')
 
-                if self.grid._input_grid[actual_grid_pos[0] - 1][actual_grid_pos[1]] != ' ':
-                    self.ax.plot([(j + 1) * self.cell_size, j * self.cell_size],
-                                 [(plot_i + 1) * self.cell_size, (plot_i + 1) * self.cell_size], color='k')
+                if self.grid._input_grid[actual_grid_pos[0] - 1][
+                    actual_grid_pos[1]] != ' ':
+                    self.ax.plot(
+                        [(j + 1) * self.cell_size, j * self.cell_size],
+                        [(plot_i + 1) * self.cell_size,
+                         (plot_i + 1) * self.cell_size], color='k')
                 else:
-                    if self.grid._input_grid[actual_grid_pos[0] - 1][actual_grid_pos[1]] != ' ':
-                        self.ax.plot([(j + 1) * self.cell_size, j * self.cell_size],
-                                     [(plot_i + 1) * self.cell_size, (plot_i + 1) * self.cell_size], color='k', linestyle=':')
-                if self.grid._input_grid[actual_grid_pos[0]][actual_grid_pos[1] + 1] != ' ':
-                    self.ax.plot([(j + 1) * self.cell_size, (j + 1) * self.cell_size],
-                                 [plot_i * self.cell_size, (plot_i + 1) * self.cell_size], color='k')
+                    if self.grid._input_grid[actual_grid_pos[0] - 1][
+                        actual_grid_pos[1]] != ' ':
+                        self.ax.plot(
+                            [(j + 1) * self.cell_size, j * self.cell_size],
+                            [(plot_i + 1) * self.cell_size,
+                             (plot_i + 1) * self.cell_size], color='k',
+                            linestyle=':')
+                if self.grid._input_grid[actual_grid_pos[0]][
+                    actual_grid_pos[1] + 1] != ' ':
+                    self.ax.plot(
+                        [(j + 1) * self.cell_size, (j + 1) * self.cell_size],
+                        [plot_i * self.cell_size,
+                         (plot_i + 1) * self.cell_size], color='k')
                 else:
-                    self.ax.plot([(j + 1) * self.cell_size, (j + 1) * self.cell_size],
-                                 [plot_i * self.cell_size, (plot_i + 1) * self.cell_size], color='k', linestyle=':')
+                    self.ax.plot(
+                        [(j + 1) * self.cell_size, (j + 1) * self.cell_size],
+                        [plot_i * self.cell_size,
+                         (plot_i + 1) * self.cell_size], color='k',
+                        linestyle=':')
 
-                if self.grid._input_grid[actual_grid_pos[0] + 1][actual_grid_pos[1]] != ' ':
-                    self.ax.plot([j * self.cell_size, (j + 1) * self.cell_size],
-                                 [plot_i * self.cell_size, plot_i * self.cell_size], color='k')
+                if self.grid._input_grid[actual_grid_pos[0] + 1][
+                    actual_grid_pos[1]] != ' ':
+                    self.ax.plot(
+                        [j * self.cell_size, (j + 1) * self.cell_size],
+                        [plot_i * self.cell_size, plot_i * self.cell_size],
+                        color='k')
                 else:
-                    self.ax.plot([j * self.cell_size, (j + 1) * self.cell_size],
-                                 [plot_i * self.cell_size, plot_i * self.cell_size], color='k', linestyle=':')
+                    self.ax.plot(
+                        [j * self.cell_size, (j + 1) * self.cell_size],
+                        [plot_i * self.cell_size, plot_i * self.cell_size],
+                        color='k', linestyle=':')
 
-                if self.grid._input_grid[actual_grid_pos[0]][actual_grid_pos[1] - 1] != ' ':
+                if self.grid._input_grid[actual_grid_pos[0]][
+                    actual_grid_pos[1] - 1] != ' ':
                     self.ax.plot([j * self.cell_size, j * self.cell_size],
-                                 [(plot_i + 1) * self.cell_size, plot_i * self.cell_size], color='k')
+                                 [(plot_i + 1) * self.cell_size,
+                                  plot_i * self.cell_size], color='k')
                 else:
                     self.ax.plot([j * self.cell_size, j * self.cell_size],
-                                 [(plot_i + 1) * self.cell_size, plot_i * self.cell_size], color='k', linestyle=':')
+                                 [(plot_i + 1) * self.cell_size,
+                                  plot_i * self.cell_size], color='k',
+                                 linestyle=':')
 
     def configure_plot(self):
-        fig = plt.figure(figsize=(7, 7 * self.grid.get_row_count() / self.grid.get_column_count()))
+        fig = plt.figure(figsize=(
+            7, 7 * self.grid.get_row_count() / self.grid.get_column_count()))
 
         self.ax = plt.axes()
         self.ax.set_aspect("equal")
@@ -67,22 +93,22 @@ class Plotter(object):
         self.ax.axes.get_xaxis().set_visible(False)
         self.ax.axes.get_yaxis().set_visible(False)
 
-        title_box = self.ax.text(0, self.grid.get_row_count() + self.cell_size + 0.1,
-                                 r"{}$\times${}".format(self.grid.get_row_count(), self.grid.get_column_count()),
-                                 bbox={"facecolor": "gray", "alpha": 0.5, "pad": 4}, fontname="serif", fontsize=15)
+        self.ax.text(0, self.grid.get_row_count() + self.cell_size + 0.1,
+                     r'%s$\times$%s' % (
+                         self.grid.get_row_count(),
+                         self.grid.get_column_count()),
+                     bbox={'facecolor': 'gray', 'alpha': 0.5, 'pad': 4},
+                     fontname='serif',
+                     fontsize=15)
         return fig
 
     def animate(self):
         fig = self.configure_plot()
-
-        self.make_grid(self.grid.get_cells())
-
+        self.__make_grid(self.grid.get_cells())
         counter = 0
 
         def make_frame(frame):
-            # for x in range(frame * 10, min(len(self.moves), frame*10 + 10)):
-            x = frame
-            action, row, col, val = self.moves[x]
+            action, row, col, val = self.moves[frame]
             nonlocal counter
             position = self.grid.get_column_count() * row + col
             if action == 0:
@@ -92,17 +118,25 @@ class Plotter(object):
                     self.texts[position].set_visible(True)
                     self.texts[position].set_text(val)
                 else:
-                    self.texts[position] = self.ax.text((2 * col + 0.7) * self.cell_size / 2, (
-                                2 * (self.grid.get_row_count() - row) + 0.7) * self.cell_size / 2,
-                                                        val, fontsize=10, weight='bold')
+                    self.texts[position] = self.ax.text(
+                        (2 * col + 0.7) * self.cell_size / 2, (
+                                2 * (
+                                self.grid.get_row_count() - row) + 0.7) *
+                        self.cell_size
+                        / 2,
+                        val, fontsize=10, weight='bold')
             elif action == -1:
                 if position in self.texts:
                     self.texts[position].set_visible(False)
 
-            self.ax.set_title("Step: {} , {}".format(counter, str((action, row, col, val))), fontname="serif", fontsize=19)
+            self.ax.set_title(
+                "Step: {} , {}".format(counter, str((action, row, col, val))),
+                fontname="serif", fontsize=19)
             return []
 
-        anim = animation.FuncAnimation(fig, make_frame, frames=self.moves.__len__(), # // 10 + 1,
+        anim = animation.FuncAnimation(fig, make_frame,
+                                       frames=self.moves.__len__(),
                                        interval=10, blit=True, repeat=False)
-        anim.save('final.mp4', fps=10)
+        if self.out_file is not None:
+            anim.save(self.out_file, fps=1)
         plt.show()

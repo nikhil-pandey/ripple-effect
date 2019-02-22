@@ -12,16 +12,15 @@ from comparators import *
 from validators import *
 from pruners import *
 import time
-import difflib
 
 log = []
 
 grids = [
-    'tests/data/re0',
-    'tests/data/re1',
-    'tests/data/re10a',
-    'tests/data/re10b',
-    'tests/data/re18',
+    'data/re0',
+    'data/re1',
+    'data/re10a',
+    'data/re10b',
+    'data/re18',
 ]
 
 solvers = [
@@ -109,7 +108,7 @@ solvers = [
         next_empty_cell,
         default_next_move,
         localized_validator,
-        default_pruner,
+        forward_pruner,
         log
     ),
     Solver(
@@ -123,7 +122,7 @@ solvers = [
         next_empty_cell,
         default_next_move,
         localized_validator,
-        forward_pruner,
+        default_pruner,
         log
     ),
 ]
@@ -160,7 +159,7 @@ if __name__ == '__main__':
             is_solution = str(solved_grid).strip() ==  (''.join(content)).strip()
 
             # File name, Solver, Clock Time (avg of 10 run in ms), Calls to Solve, Validation Checks, Total Assignments, Wrong Assignments, Solved
-            f.write('%s,,,%s,,,%s,,,%s,,,%s,,,%s,,,%s,,,%s\n' % (grid_file, solver, average_time * 1000, counter[1], counter[3], counter[2], counter[0], is_solution))
+            f.write('%s|%s|%s|%s|%s|%s|%s|%s\n' % (grid_file, solver, average_time * 1000, counter[1], counter[3], counter[2], counter[0], is_solution))
             f.flush()
             del solved_grid, counter
 

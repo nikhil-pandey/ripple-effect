@@ -2,6 +2,12 @@ import logging
 
 
 def value_pruner(grid, cell):
+    """
+    Value Pruner. Like Forward Pruner but doesn't stop search.
+    :param grid: The grid.
+    :param cell: The cell that was changed.
+    :return: Tuple of removed values and if the search should continue
+    """
     # logging.debug('PRUNER: Using value pruner to prune %s :)' % (cell))
     removed = []
     for room_cell in cell.get_room().get_cells():

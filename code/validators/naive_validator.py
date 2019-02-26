@@ -1,4 +1,11 @@
 def naive_validator(grid, cell, value):
+    """
+    Naive validator.
+    :param grid: The grid.
+    :param cell: The cell to change.
+    :param value: The new value.
+    :return: True if validation passed else False
+    """
     for room_cell in cell.get_room().get_cells():
         if room_cell.get_value() == value:
             return False
@@ -8,7 +15,8 @@ def naive_validator(grid, cell, value):
         if check_cell == cell:
             continue
 
-        if check_cell.get_value() == value and abs(check_cell.get_column() - cell.get_column()) <= value:
+        if check_cell.get_value() == value and abs(
+                check_cell.get_column() - cell.get_column()) <= value:
             return False
 
     for i in range(grid.get_row_count()):
@@ -17,7 +25,8 @@ def naive_validator(grid, cell, value):
         if check_cell == cell:
             continue
 
-        if check_cell.get_value() == value and abs(i - cell.get_row()) <= value:
+        if check_cell.get_value() == value and abs(
+                i - cell.get_row()) <= value:
             return False
 
     return True

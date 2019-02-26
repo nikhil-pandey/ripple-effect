@@ -16,12 +16,19 @@ from pruners import forward_pruner
 class GridReader(BaseReader):
 
     def __init__(self, file_name):
+        """
+        Sets up the grid.
+        :param file_name: Name of the file or String like input.
+        """
         super().__init__(file_name)
         self._rooms = []
-        self.prepare()
+        self.__prepare()
 
-    def prepare(self):
-
+    def __prepare(self):
+        """
+        Prepares the grid by doing a dfs search to figure out the rooms.
+        :return: None
+        """
         main_visited = set()
         for i in range(0, self._cell_count):
             row = i // self._column_count
@@ -32,7 +39,7 @@ class GridReader(BaseReader):
 
             room = Room()
             self._rooms.append(room)
-            cell = self.get_or_create_cell(room, row, col)
+            cell = self.__get_or_create_cell(room, row, col)
 
             visited = set()
             main_visited.add((row, col))
@@ -44,17 +51,16 @@ class GridReader(BaseReader):
             while room_queue:
 
                 state = room_queue.popleft()
-                successors = self.get_successors(state)
+                successors = self.__get_successors(state)
 
                 for row, col in successors:
                     if (row, col) not in visited:
-                        self.get_or_create_cell(room, row, col)
+                        self.__get_or_create_cell(room, row, col)
                         main_visited.add((row, col))
                         visited.add((row, col))
                         room_queue.append((row, col))
 
         self._rooms.sort(key=lambda x: x.get_size(), reverse=True)
-
         cell_having_values = []
         for room in self._rooms:
             for number in range(1, room.get_size() + 1):
@@ -65,10 +71,16 @@ class GridReader(BaseReader):
                     cell.add_move(number)
                     room.add_move(number, cell)
 
+        # Remove possible values from around cells that already have values
         for cell in cell_having_values:
             forward_pruner(self, cell)
 
-    def get_successors(self, position):
+    def __get_successors(self, position):
+        """
+        Get successors of a position
+        :param position: tuple of row, col
+        :return: Generates the successors
+        """
         actual_grid_pos = position[0] * 2 + 1, position[1] * 2 + 1
 
         sfs = [
@@ -93,7 +105,14 @@ class GridReader(BaseReader):
 
             yield actual_succ_posn
 
-    def get_or_create_cell(self, room, row, col):
+    def __get_or_create_cell(self, room, row, col):
+        """
+        Returns the cell if it already exists else creates a new cell.
+        :param room: The room cell is in.
+        :param row: The row.
+        :param col: The col.
+        :return: The cell.
+        """
         if not self._cells[row][col]:
             value = self._input_grid[row * 2 + 1][col * 2 + 1]
             value = int(value) if value != '.' else None
@@ -104,4 +123,8 @@ class GridReader(BaseReader):
         return self._cells[row][col]
 
     def get_rooms(self):
+        """
+        Returns the rooms.
+        :return: The rooms.
+        """
         return self._rooms

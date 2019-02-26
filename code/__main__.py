@@ -14,8 +14,8 @@ from pruners import *
 import time
 
 
-# import logging
-# logging.basicConfig(level=# logging.DEBUG)
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 
 def ask(options):
@@ -81,5 +81,5 @@ elapsed_time = time.time() - start_time
 print(solved_grid)
 print('Solved in %s seconds' % (elapsed_time))
 # from plotter import Plotter
-# p = Plotter(solved_grid, log)
+# p = Plotter(solved_grid, counter)
 # p.show_solution()

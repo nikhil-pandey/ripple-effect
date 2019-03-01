@@ -21,7 +21,8 @@ class Solver(object):
         :param move_selector: The move selector.
         :param validator: The validator.
         :param pruner: The pruner.
-        :param steps_log: Log collection.
+        :param steps_log: Log for visualization.
+        :param count_log: Count different actions. For instrumentation.
         """
         self._cell_selector = cell_selector
         self._move_selector = move_selector

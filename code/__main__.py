@@ -13,8 +13,8 @@ from validators import *
 from pruners import *
 import time
 
-
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 
@@ -63,14 +63,11 @@ inputs = [
     },
 ]
 
-log = []
-
 solver = Solver(
     ask(inputs[0]),
     ask(inputs[1]),
     ask(inputs[2]),
-    ask(inputs[3]),
-    log
+    ask(inputs[3])
 )
 
 grid = GridReader(input('Enter the file name: ').strip())
@@ -80,6 +77,24 @@ solved_grid = solver.solve(grid)
 elapsed_time = time.time() - start_time
 print(solved_grid)
 print('Solved in %s seconds' % (elapsed_time))
+
+# log = []
+# solver = Solver(
+#     ask(inputs[0]),
+#     ask(inputs[1]),
+#     ask(inputs[2]),
+#     ask(inputs[3]),
+#     log
+# )
+#
+# grid = GridReader(input('Enter the file name: ').strip())
+#
+# start_time = time.time()
+# solved_grid = solver.solve(grid)
+# elapsed_time = time.time() - start_time
+# print(solved_grid)
+# print('Solved in %s seconds' % (elapsed_time))
+#
 # from plotter import Plotter
-# p = Plotter(solved_grid, counter)
+# p = Plotter(solved_grid, log)
 # p.show_solution()

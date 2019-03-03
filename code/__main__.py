@@ -63,14 +63,17 @@ inputs = [
     },
 ]
 
+log = []
 solver = Solver(
     ask(inputs[0]),
     ask(inputs[1]),
     ask(inputs[2]),
-    ask(inputs[3])
+    ask(inputs[3]),
+    log
 )
 
 grid = GridReader(input('Enter the file name: ').strip())
+grid_copy = GridReader(str(grid))
 
 start_time = time.time()
 solved_grid = solver.solve(grid)
@@ -78,24 +81,16 @@ elapsed_time = time.time() - start_time
 print(solved_grid)
 print('Solved in %s seconds' % (elapsed_time))
 
-# log = []
-# solver = Solver(
-#     ask(inputs[0]),
-#     ask(inputs[1]),
-#     ask(inputs[2]),
-#     ask(inputs[3]),
-#     log
-# )
-#
-# grid = GridReader(input('Enter the file name: ').strip())
-#
-# start_time = time.time()
-# solved_grid = solver.solve(grid)
-# elapsed_time = time.time() - start_time
-# print(solved_grid)
-# print('Solved in %s seconds' % (elapsed_time))
-#
-# from plotter import Plotter
-# p = Plotter(solved_grid, log, out_file='out/bug.mp4')
-# # p.show_solution()
-# p.animate()
+
+from plotter import Plotter
+
+if input('Do you want to show the solution using matplotlib? [y/n] ') == 'y':
+    p = Plotter(solved_grid)
+    p.show_solution()
+
+if input('Do you want to generate a video using matplotlib? [y/n] ') == 'y':
+    file_name = None
+    if input('\tDo you want to save the video to a file? [y/n] ') == 'y':
+        file_name = input('Output file name: ')
+    p = Plotter(grid_copy, log, out_file=file_name)
+    p.animate()

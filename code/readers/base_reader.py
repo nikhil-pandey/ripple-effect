@@ -1,11 +1,3 @@
-__author__ = 'Nikhil Pandey'
-
-"""
-file: base_reader.py
-Author: Nikhil Pandey np7803@rit.edu
-Description: Base Reader
-"""
-
 import os
 import io
 

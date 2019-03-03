@@ -3,7 +3,7 @@ from matplotlib import animation
 
 
 class Plotter(object):
-    def __init__(self, grid, moves, cell_size=1, out_file=None):
+    def __init__(self, grid, moves=[], cell_size=1, out_file=None):
         self.grid = grid
         self.cell_size = cell_size
         self.height = grid.row_count * cell_size
@@ -105,15 +105,12 @@ class Plotter(object):
     def animate(self):
         fig = self.configure_plot()
         self.__make_grid(self.grid.cells)
-        counter = 0
+        actions = ('Solve Called', 'Move Selected', 'Validation Failed', 'Assigned Move', 'Wrong Move')
 
         def make_frame(frame):
             action, row, col, val = self.moves[frame]
-            nonlocal counter
             position = self.grid.column_count * row + col
-            if action == 0:
-                counter += 1
-            elif action == 1:
+            if action == 3:
                 if position in self.texts:
                     self.texts[position].set_visible(True)
                     self.texts[position].set_text(val)
@@ -128,10 +125,10 @@ class Plotter(object):
             elif action == -1:
                 if position in self.texts:
                     self.texts[position].set_visible(False)
-
+            nonlocal actions
             self.ax.set_title(
-                "Step: {} , {}".format(counter, str((action, row, col, val))),
-                fontname="serif", fontsize=19)
+                'Row: %d Col: %d Val: %d\n%s' % (row, col, val, actions[action]),
+                fontname='serif', fontsize=17)
             return []
 
         anim = animation.FuncAnimation(fig, make_frame,

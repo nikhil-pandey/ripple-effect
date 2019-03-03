@@ -1,12 +1,3 @@
-__author__ = 'Nikhil Pandey'
-
-"""
-file: solver.py
-language: python3
-author: np7803@rit.edu Nikhil Pandey
-description: Solver Class
-"""
-
 from pruners import patch_removed_values
 
 # [Wrong Assignments, Calls to Solve, Total Assignments, Validation Checks]

@@ -1,11 +1,3 @@
-__author__ = 'Nikhil Pandey'
-
-"""
-file: grid_reader.py
-Author: Nikhil Pandey np7803@rit.edu
-Description: Grid Reader
-"""
-
 from cell import Cell
 from room import Room
 from .base_reader import BaseReader

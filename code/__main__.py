@@ -96,5 +96,6 @@ print('Solved in %s seconds' % (elapsed_time))
 # print('Solved in %s seconds' % (elapsed_time))
 #
 # from plotter import Plotter
-# p = Plotter(solved_grid, log)
-# p.show_solution()
+# p = Plotter(solved_grid, log, out_file='out/bug.mp4')
+# # p.show_solution()
+# p.animate()

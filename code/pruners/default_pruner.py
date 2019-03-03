@@ -1,6 +1,3 @@
-import logging
-
-
 def default_pruner(grid, cell):
     """
     Default pruner. Doesn't do anything.

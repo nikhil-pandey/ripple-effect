@@ -5,5 +5,5 @@ def patch_removed_values(items):
     :return: None
     """
     for cell, val in items:
-        cell.get_room().add_move(val, cell)
-        cell.add_move(val)
+        cell.room.possible_options[val].add(cell)
+        cell.possible_moves.add(val)

@@ -1,6 +1,3 @@
-import logging
-
-
 def human_like_next_move(cell):
     """
     Human like next move. Returns the next move if a move has been
@@ -8,13 +5,11 @@ def human_like_next_move(cell):
     :param cell: The cell.
     :return: next moves for the cell.
     """
-    next_move = cell.get_next_move()
+    next_move = cell.next_move
 
     if next_move is None:
-        for value in cell.get_moves():
+        for value in cell.possible_moves:
             yield value
         return
 
-    # logging.debug('MOVE: Selecting prioritized Move: %d for %s' % (
-    # next_move, cell))
     yield next_move

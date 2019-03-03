@@ -1,6 +1,3 @@
-import logging
-
-
 def next_human_like_mrv_cell(rooms, cells):
     """
     Human like decision with fallback to MRV.
@@ -14,34 +11,30 @@ def next_human_like_mrv_cell(rooms, cells):
     lowest_cell = None
 
     for room in rooms:
-        for number, cells in room.get_options().items():
+        for number, cells in room.possible_options.items():
             if len(cells) == 1:
                 for cell in cells:
-                    if cell.has_value():
+                    if cell.value is not None:
                         continue
-                    # logging.debug('COMPARATOR: Only valid value: %s for
-                    # cell: %s' % (number, cell))
-                    cell.assign_next_move(number)
+                    cell.next_move = number
                     return cell
 
-        for cell in room.get_cells():
-            if cell.has_value():
+        for cell in room.cells:
+            if cell.value is not None:
                 continue
 
-            if lowest_cell is None or cell.get_move_count() < lowest_count:
-                lowest_count = cell.get_move_count()
+            if lowest_cell is None or len(cell.possible_moves) < lowest_count:
+                lowest_count = len(cell.possible_moves)
                 lowest_cell = cell
-            elif cell.get_move_count() == lowest_count:
+            elif len(cell.possible_moves) == lowest_count:
                 # Tie breaker
                 # Most tried cells are prioritized first
-                if cell.get_tries() > lowest_cell.get_tries():
+                if cell.tries > lowest_cell.tries:
                     lowest_cell = cell
-                elif cell.get_tries() == lowest_cell.get_tries():
+                elif cell.tries == lowest_cell.tries:
                     # Tie breaker
                     # Bigger rooms get selected first
-                    if cell.get_room().get_size() > lowest_cell.get_room().get_size():
+                    if len(cell.room.cells) > len(lowest_cell.room.cells):
                         lowest_cell = cell
 
-    # logging.debug('COMPARATOR: Lowest number of moves: %d found for Cell:
-    # %s' % (lowest_count, lowest_cell))
     return lowest_cell

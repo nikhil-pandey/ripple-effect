@@ -8,7 +8,13 @@ description: Solver Class
 """
 
 from pruners import patch_removed_values
-import logging
+
+# [Wrong Assignments, Calls to Solve, Total Assignments, Validation Checks]
+CALL_TO_SOLVE = 0
+TOTAL_MOVES = 1
+FAILED_VALIDATION = 2
+ASSIGNED_MOVES = 3
+WRONG_MOVES = -1  # 4
 
 
 class Solver(object):
@@ -24,78 +30,60 @@ class Solver(object):
         :param steps_log: Log for visualization.
         :param count_log: Count different actions. For instrumentation.
         """
-        self._cell_selector = cell_selector
-        self._move_selector = move_selector
-        self._validator = validator
-        self._pruner = pruner
-        self._steps_log = steps_log
-        self._count_log = count_log
+        self.cell_selector = cell_selector
+        self.move_selector = move_selector
+        self.validator = validator
+        self.pruner = pruner
+        self.steps_log = steps_log
+        self.count_log = count_log
 
     def solve(self, grid):
-        # logging.debug('SOLVER: Current grid\n%s' % (grid))
+        self.__log(CALL_TO_SOLVE, 0, 0, 0)
 
-        if self._steps_log is not None:
-            self._steps_log.append((0, 0, 0, 0))
-
-        if self._count_log is not None:
-            self._count_log[0] += 1
-
-        cell = self._cell_selector(grid.get_rooms(), grid.get_cells())
+        cell = self.cell_selector(grid.rooms, grid.cells)
 
         if cell is None:
             return grid
 
-        for move in self._move_selector(cell):
-            # logging.debug('SOLVER: Testing move %d for %s' % (move, cell))
-            if self._steps_log is not None:
-                self._steps_log.append(
-                    (2, cell.get_row(), cell.get_column(), move))
-            if self._count_log is not None:
-                self._count_log[2] += 1
+        for move in self.move_selector(cell):
+            self.__log(TOTAL_MOVES, cell.row, cell.col, move)
 
-            if not self._validator(grid, cell, move):
-                # logging.debug('SOLVER: Validation failed for move %d for
-                # %s' % (move, cell))
+            if not self.validator(grid, cell, move):
+                self.__log(FAILED_VALIDATION, cell.row, cell.col, move)
                 continue
 
-            if self._steps_log is not None:
-                self._steps_log.append(
-                    (1, cell.get_row(), cell.get_column(), move))
+            self.__log(ASSIGNED_MOVES, cell.row, cell.col, move)
+            cell.value = move
+            cell.tries += 1
+            cell.next_move = None
 
-            if self._count_log is not None:
-                self._count_log[1] += 1
+            cell.room.possible_options[move].discard(cell)
 
-            cell.assign_value(move)
-            cell.remove_next_move()
-            # logging.debug('SOLVER: Removing %s from %s' % (cell,
-            # cell.get_room()))
-            cell.get_room().remove_move(cell.get_value(), cell)
-            # logging.debug('SOLVER: Removed %s from %s' % (cell,
-            # cell.get_room()))
-
-            pruned, should_continue = self._pruner(grid, cell)
+            pruned, should_continue = self.pruner(grid, cell)
 
             if should_continue:
                 solution = self.solve(grid)
                 if solution:
                     return solution
 
-            if self._steps_log is not None:
-                self._steps_log.append(
-                    (-1, cell.get_row(), cell.get_column(), move))
-
-            if self._count_log is not None:
-                self._count_log[-1] += 1
+            self.__log(WRONG_MOVES, cell.row, cell.col, move)
 
             # Restore the state
-            cell.get_room().add_move(cell.get_value(), cell)
+            cell.room.possible_options[move].add(cell)
             patch_removed_values(pruned)
 
-        cell.assign_value(None)
+        cell.value = None
 
         return None
 
+    def __log(self, action, row, col, value):
+        if self.steps_log is not None:
+            self.steps_log.append((action, row, col, value))
+
+        if self.count_log is not None:
+            self.count_log[action] += 1
+
     def __repr__(self):
         return 'Solver(%s, %s, %s, %s)' % (
-            self._cell_selector.__name__, self._move_selector.__name__,
-            self._validator.__name__, self._pruner.__name__)
+            self.cell_selector.__name__, self.move_selector.__name__,
+            self.validator.__name__, self.pruner.__name__)

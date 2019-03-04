@@ -8,11 +8,12 @@ Description: Ripple effect solver.
 
 from solvers import *
 from readers import *
-from comparators import *
+from cell_selectors import *
+from move_selectors import *
 from validators import *
 from pruners import *
+from plotter import Plotter
 import time
-
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -81,9 +82,6 @@ elapsed_time = time.time() - start_time
 print(solved_grid)
 print('Solved in %s seconds' % (elapsed_time))
 
-
-from plotter import Plotter
-
 if input('Do you want to show the solution using matplotlib? [y/n] ') == 'y':
     p = Plotter(solved_grid)
     p.show_solution()
@@ -91,6 +89,6 @@ if input('Do you want to show the solution using matplotlib? [y/n] ') == 'y':
 if input('Do you want to generate a video using matplotlib? [y/n] ') == 'y':
     file_name = None
     if input('\tDo you want to save the video to a file? [y/n] ') == 'y':
-        file_name = input('Output file name: ')
+        file_name = input('\t\tOutput file name: ')
     p = Plotter(grid_copy, log, out_file=file_name)
     p.animate()

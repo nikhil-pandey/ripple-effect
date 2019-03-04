@@ -39,7 +39,7 @@ grids = [
     'data/pp5509',
     'data/pp4508',
     'data/pp4467',
-    'data/pp4402',
+    'data/pp4402', # Special black boxes
     'data/pp6008',
     'data/pp4606',
     'data/pp4651',
@@ -211,11 +211,12 @@ if __name__ == '__main__':
             is_solution = str(solved_grid).strip() == (
                 ''.join(content)).strip()
 
-            # File name, Solver, Clock Time (avg of 10 run in ms), Median
+            # File name, Grid Size, Solver, Clock Time (avg of 10 run in ms), Median
             # Clock time,  Calls to Solve, Total Value Selection,
-            # Failed Validation, Total Assignments, Wrong Moves, Solved
-            f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
+            # Failed Validation, Total Assignments, Wrong Moves, Solved, Exact
+            f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
                 grid_file,
+                str(grid.row_count) + 'x' + str(grid.column_count),
                 solver,
                 average_time * 1000,
                 median_time * 1000,
@@ -224,6 +225,7 @@ if __name__ == '__main__':
                 counter[FAILED_VALIDATION],
                 counter[ASSIGNED_MOVES],
                 counter[WRONG_MOVES],
+                solved_grid is not None,
                 is_solution
             ))
             f.flush()

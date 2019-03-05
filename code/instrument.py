@@ -279,7 +279,7 @@ if __name__ == '__main__':
             f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
                 grid_file,
                 str(grid.row_count) + 'x' + str(grid.column_count),
-                grid.row_count * grid.column_count,
+                grid.cell_count,
                 len(grid.rooms),
                 sum(1 for room in grid.rooms if len(room.cells) == 1),
                 sum(1 for room in grid.rooms if len(room.cells) == 2),

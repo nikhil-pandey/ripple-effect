@@ -16,7 +16,16 @@ class BaseReader(object):
 
         self.row_count, self.column_count = (int(x) for x in
                                              f.readline().split())
-        self.input_grid = [list(l.rstrip('\n')) for l in f.readlines()]
+
+        self.input_grid = [[' ' for __ in range(self.column_count * 2 + 1)] for _ in range(self.row_count * 2 + 1)]
+
+        for row, line in enumerate(f):
+            if row > self.row_count * 2:
+                break
+            for idx, char in enumerate(line):
+                if char == '\n' or idx > self.column_count * 2:
+                    break
+                self.input_grid[row][idx] = char
 
         self.cell_count = self.row_count * self.column_count
 

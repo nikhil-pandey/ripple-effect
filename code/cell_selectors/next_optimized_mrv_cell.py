@@ -1,6 +1,7 @@
 def next_optimized_mrv_cell(rooms, cells):
     """
-    Selects next move based on minimum remaining values.
+    Selects next move based on minimum remaining values with some tie breaking
+    between two mrv cells.
     :param rooms: The rooms.
     :param cells: The cells.
     :return: The next cell.

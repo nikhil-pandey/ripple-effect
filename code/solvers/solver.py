@@ -48,6 +48,7 @@ class Solver(object):
             cell.tries += 1
             cell.next_move = None
 
+            # Only for Human-Like MRV
             cell.room.possible_options[move].discard(cell)
 
             pruned, should_continue = self.pruner(grid, cell)
@@ -59,8 +60,10 @@ class Solver(object):
 
             self.__log(WRONG_MOVES, cell.row, cell.col, move)
 
-            # Restore the state
+            # Only for Human-Like MRV
             cell.room.possible_options[move].add(cell)
+            
+            # Restore the state
             patch_removed_values(pruned)
 
         cell.value = None

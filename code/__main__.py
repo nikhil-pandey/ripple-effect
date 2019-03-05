@@ -37,7 +37,8 @@ inputs = [
         'options': {
             1: next_empty_cell,
             2: next_mrv_cell,
-            3: next_human_like_mrv_cell,
+            3: next_optimized_mrv_cell,
+            4: next_human_like_mrv_cell,
         }
     },
     {
@@ -64,13 +65,15 @@ inputs = [
     },
 ]
 
+counter = [0, 0, 0, 0, 0]
 log = []
 solver = Solver(
     ask(inputs[0]),
     ask(inputs[1]),
     ask(inputs[2]),
     ask(inputs[3]),
-    log
+    log,
+    counter
 )
 
 grid = GridReader(input('Enter the file name: ').strip())
@@ -81,6 +84,11 @@ solved_grid = solver.solve(grid)
 elapsed_time = time.time() - start_time
 print(solved_grid)
 print('Solved in %s seconds' % (elapsed_time))
+print('Called Solve Method: %s times' % (counter[0]))
+print('Total Moves Evaluated: %s' % (counter[1]))
+print('Moves whose Validation Failed: %s' % (counter[2]))
+print('Assigned Moves: %s times' % (counter[3]))
+print('Wrong Moves Assigned: %s times' % (counter[4]))
 
 if input('Do you want to show the solution using matplotlib? [y/n] ') == 'y':
     p = Plotter(solved_grid)

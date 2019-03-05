@@ -8,17 +8,12 @@ Description: Instrument the process and record the statistics.
 
 from solvers import Solver
 from readers import GridReader
-from comparators import *
+from cell_selectors import *
+from move_selectors import *
 from validators import *
 from pruners import *
 import time
 import numpy
-
-CALL_TO_SOLVE = 0
-TOTAL_MOVES = 1
-FAILED_VALIDATION = 2
-ASSIGNED_MOVES = 3
-WRONG_MOVES = -1  # 4
 
 counter = [0, 0, 0, 0, 0]
 
@@ -39,7 +34,6 @@ grids = [
     'data/pp5509',
     'data/pp4508',
     'data/pp4467',
-    'data/pp4402', # Special black boxes
     'data/pp6008',
     'data/pp4606',
     'data/pp4651',
@@ -50,17 +44,13 @@ grids = [
     'data/pp4466',
     'data/pp5518',
     'data/pp4394',
-    # 'data/pp5060',
-    # 'data/pp4806',
-    # 'data/pp4495',
-    # 'data/pp4489',
-    # 'data/pp4475',
-    # 'data/pp4604',
-    # 'data/pp4511',
-    # 'data/pp4590',
-    # 'data/pp4661',
-    # 'data/pp5833',
-    # 'data/pp4419',
+    'data/pp5060',
+    'data/pp4806',
+    'data/pp4489',
+    'data/pp4604',
+    'data/pp4511',
+    'data/pp4590',
+    'data/pp5833',
 
     # 4 Star
     'data/pp4828',
@@ -71,6 +61,10 @@ grids = [
     'data/pp5161',
     'data/pp4505',
     'data/pp4658',
+
+    # Puzzlephil.com
+    'data/puzzlephil7',
+    'data/puzzlephil8',
 
     # Given
     'data/re0',
@@ -92,6 +86,13 @@ solvers = [
     Solver(
         next_human_like_mrv_cell,
         human_like_next_move,
+        localized_validator,
+        value_pruner,
+        count_log=counter
+    ),
+    Solver(
+        next_human_like_mrv_cell,
+        human_like_next_move,
         naive_validator,
         forward_pruner,
         count_log=counter
@@ -100,12 +101,34 @@ solvers = [
         next_human_like_mrv_cell,
         human_like_next_move,
         localized_validator,
+        forward_pruner,
+        count_log=counter
+    ),
+    # Optimized MRV Solvers
+    Solver(
+        next_optimized_mrv_cell,
+        default_next_move,
+        naive_validator,
         value_pruner,
         count_log=counter
     ),
     Solver(
-        next_human_like_mrv_cell,
-        human_like_next_move,
+        next_optimized_mrv_cell,
+        default_next_move,
+        localized_validator,
+        value_pruner,
+        count_log=counter
+    ),
+    Solver(
+        next_optimized_mrv_cell,
+        default_next_move,
+        naive_validator,
+        forward_pruner,
+        count_log=counter
+    ),
+    Solver(
+        next_optimized_mrv_cell,
+        default_next_move,
         localized_validator,
         forward_pruner,
         count_log=counter
@@ -115,6 +138,27 @@ solvers = [
         next_mrv_cell,
         default_next_move,
         naive_validator,
+        default_pruner,
+        count_log=counter
+    ),
+    Solver(
+        next_mrv_cell,
+        default_next_move,
+        localized_validator,
+        default_pruner,
+        count_log=counter
+    ),
+    Solver(
+        next_mrv_cell,
+        default_next_move,
+        naive_validator,
+        value_pruner,
+        count_log=counter
+    ),
+    Solver(
+        next_mrv_cell,
+        default_next_move,
+        localized_validator,
         value_pruner,
         count_log=counter
     ),
@@ -123,13 +167,6 @@ solvers = [
         default_next_move,
         naive_validator,
         forward_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_mrv_cell,
-        default_next_move,
-        localized_validator,
-        value_pruner,
         count_log=counter
     ),
     Solver(
@@ -186,6 +223,34 @@ solvers = [
 
 if __name__ == '__main__':
     f = open('out/results.csv', 'w')
+    # File name, Grid Size, Solver, Clock Time (avg of 10 run in ms), Median
+            # Clock time,  Calls to Solve, Total Value Selection,
+            # Failed Validation, Total Assignments, Wrong Moves, Solved, Exact
+    f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
+        'File',
+        'Grid Size',
+        'Number of Cells',
+        'Number of Regions',
+        'Room with Size 1',
+        'Room with Size 2',
+        'Room with Size 3',
+        'Room with Size 4',
+        'Room with Size 5',
+        'Room with Size 6',
+        'Room with Size 7',
+        'Room with Size 8',
+        'Room with Size 9',
+        'Solver',
+        'Mean Clock Time (ms)',
+        'Median Clock Time (ms)',
+        'Calls to Solve Method',
+        'Total Moves Checked',
+        'Failed Validation Checks',
+        'Total Moves Assigned',
+        'Total Wrong Moves',
+        'Solved',
+        'Matches Given Solution',
+    ))
     for grid_file in grids:
         print(grid_file)
         for solver in solvers:
@@ -199,7 +264,7 @@ if __name__ == '__main__':
                 grid = GridReader(grid_file)
                 solved_grid = solver.solve(grid)
                 end = time.time()
-                print('\t\tRun %s: %s' % (i + 1, end - start))
+                print('\t\tRun %s: %s seconds' % (i + 1, end - start))
                 times.append(end - start)
 
             average_time = sum(times) / len(times)
@@ -211,20 +276,28 @@ if __name__ == '__main__':
             is_solution = str(solved_grid).strip() == (
                 ''.join(content)).strip()
 
-            # File name, Grid Size, Solver, Clock Time (avg of 10 run in ms), Median
-            # Clock time,  Calls to Solve, Total Value Selection,
-            # Failed Validation, Total Assignments, Wrong Moves, Solved, Exact
-            f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
+            f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
                 grid_file,
                 str(grid.row_count) + 'x' + str(grid.column_count),
+                grid.row_count * grid.column_count,
+                len(grid.rooms),
+                sum(1 for room in grid.rooms if len(room.cells) == 1),
+                sum(1 for room in grid.rooms if len(room.cells) == 2),
+                sum(1 for room in grid.rooms if len(room.cells) == 3),
+                sum(1 for room in grid.rooms if len(room.cells) == 4),
+                sum(1 for room in grid.rooms if len(room.cells) == 5),
+                sum(1 for room in grid.rooms if len(room.cells) == 6),
+                sum(1 for room in grid.rooms if len(room.cells) == 7),
+                sum(1 for room in grid.rooms if len(room.cells) == 8),
+                sum(1 for room in grid.rooms if len(room.cells) == 9),
                 solver,
                 average_time * 1000,
                 median_time * 1000,
-                counter[CALL_TO_SOLVE],
-                counter[TOTAL_MOVES],
-                counter[FAILED_VALIDATION],
-                counter[ASSIGNED_MOVES],
-                counter[WRONG_MOVES],
+                counter[0],
+                counter[1],
+                counter[2],
+                counter[3],
+                counter[4],
                 solved_grid is not None,
                 is_solution
             ))

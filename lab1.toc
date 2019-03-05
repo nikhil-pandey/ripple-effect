@@ -6,36 +6,36 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}Dependency Injection}{2}{section.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Cell Selector}{2}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.1}Cell Selector}{3}{subsection.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.1.1}next\_empty\_cell}{2}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.1}next\_empty\_cell}{3}{subsubsection.3.1.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.1.2}next\_mrv\_cell}{2}{subsubsection.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.2}next\_mrv\_cell}{3}{subsubsection.3.1.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.1.3}next\_human\_like\_mrv\_cell}{2}{subsubsection.3.1.3}
+\contentsline {subsubsection}{\numberline {3.1.3}next\_human\_like\_mrv\_cell}{3}{subsubsection.3.1.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Move Selector}{2}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Move Selector}{3}{subsection.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.2.1}default\_next\_move}{2}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.1}default\_next\_move}{3}{subsubsection.3.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.2.2}human\_like\_next\_move}{2}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.2}human\_like\_next\_move}{3}{subsubsection.3.2.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Validator}{2}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.3}Validator}{3}{subsection.3.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.3.1}naive\_validator}{2}{subsubsection.3.3.1}
+\contentsline {subsubsection}{\numberline {3.3.1}naive\_validator}{3}{subsubsection.3.3.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.3.2}localized\_validator}{2}{subsubsection.3.3.2}
+\contentsline {subsubsection}{\numberline {3.3.2}localized\_validator}{3}{subsubsection.3.3.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.4}Pruner}{2}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.4}Pruner}{3}{subsection.3.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.4.1}default\_pruner}{2}{subsubsection.3.4.1}
+\contentsline {subsubsection}{\numberline {3.4.1}default\_pruner}{3}{subsubsection.3.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.4.2}value\_pruner}{2}{subsubsection.3.4.2}
+\contentsline {subsubsection}{\numberline {3.4.2}value\_pruner}{3}{subsubsection.3.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.4.3}forward\_pruner}{2}{subsubsection.3.4.3}
+\contentsline {subsubsection}{\numberline {3.4.3}forward\_pruner}{3}{subsubsection.3.4.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Solvers}{2}{section.4}
+\contentsline {section}{\numberline {4}Solvers}{3}{section.4}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {5}Puzzles}{2}{section.5}
+\contentsline {section}{\numberline {5}Puzzles}{3}{section.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {6}Results}{2}{section.6}
+\contentsline {section}{\numberline {6}Results}{3}{section.6}

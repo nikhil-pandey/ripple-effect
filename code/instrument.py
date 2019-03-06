@@ -62,10 +62,6 @@ grids = [
     'data/pp4505',
     'data/pp4658',
 
-    # Puzzlephil.com
-    'data/puzzlephil7',
-    'data/puzzlephil8',
-
     # Given
     'data/re0',
     'data/re1',
@@ -134,20 +130,6 @@ solvers = [
         count_log=counter
     ),
     # MRV Solvers
-    Solver(
-        next_mrv_cell,
-        default_next_move,
-        naive_validator,
-        default_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_mrv_cell,
-        default_next_move,
-        localized_validator,
-        default_pruner,
-        count_log=counter
-    ),
     Solver(
         next_mrv_cell,
         default_next_move,
@@ -231,15 +213,15 @@ if __name__ == '__main__':
         'Grid Size',
         'Number of Cells',
         'Number of Regions',
-        'Room with Size 1',
-        'Room with Size 2',
-        'Room with Size 3',
-        'Room with Size 4',
-        'Room with Size 5',
-        'Room with Size 6',
-        'Room with Size 7',
-        'Room with Size 8',
-        'Room with Size 9',
+        'Region with Size 1',
+        'Region with Size 2',
+        'Region with Size 3',
+        'Region with Size 4',
+        'Region with Size 5',
+        'Region with Size 6',
+        'Region with Size 7',
+        'Region with Size 8',
+        'Region with Size 9',
         'Solver',
         'Mean Clock Time (ms)',
         'Median Clock Time (ms)',
@@ -273,8 +255,8 @@ if __name__ == '__main__':
             h = open(grid_file + '.sol', 'r')
             content = h.readlines()
             h.close()
-            is_solution = str(solved_grid).strip() == (
-                ''.join(content)).strip()
+            is_solution = str(solved_grid).strip().replace(' ', '') == (
+                ''.join(content)).strip().replace(' ', '')
 
             f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
                 grid_file,

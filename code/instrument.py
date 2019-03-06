@@ -70,30 +70,9 @@ grids = [
     'data/re18',
 ]
 
-solvers = [
+solvers = {
     # Human like solvers
-    Solver(
-        next_human_like_mrv_cell,
-        human_like_next_move,
-        naive_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_human_like_mrv_cell,
-        human_like_next_move,
-        localized_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_human_like_mrv_cell,
-        human_like_next_move,
-        naive_validator,
-        forward_pruner,
-        count_log=counter
-    ),
-    Solver(
+    'Human': Solver(
         next_human_like_mrv_cell,
         human_like_next_move,
         localized_validator,
@@ -101,28 +80,7 @@ solvers = [
         count_log=counter
     ),
     # Optimized MRV Solvers
-    Solver(
-        next_optimized_mrv_cell,
-        default_next_move,
-        naive_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_optimized_mrv_cell,
-        default_next_move,
-        localized_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_optimized_mrv_cell,
-        default_next_move,
-        naive_validator,
-        forward_pruner,
-        count_log=counter
-    ),
-    Solver(
+    'OMRV': Solver(
         next_optimized_mrv_cell,
         default_next_move,
         localized_validator,
@@ -130,85 +88,33 @@ solvers = [
         count_log=counter
     ),
     # MRV Solvers
-    Solver(
-        next_mrv_cell,
-        default_next_move,
-        naive_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_mrv_cell,
-        default_next_move,
-        localized_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_mrv_cell,
-        default_next_move,
-        naive_validator,
-        forward_pruner,
-        count_log=counter
-    ),
-    Solver(
+    'MRVFWD': Solver(
         next_mrv_cell,
         default_next_move,
         localized_validator,
         forward_pruner,
+        count_log=counter
+    ),
+    'MRV': Solver(
+        next_mrv_cell,
+        default_next_move,
+        localized_validator,
+        default_pruner,
         count_log=counter
     ),
     # Brute Forcers
-    Solver(
-        next_empty_cell,
-        default_next_move,
-        naive_validator,
-        default_pruner,
-        count_log=counter
-    ),
-    Solver(
+    'BF': Solver(
         next_empty_cell,
         default_next_move,
         localized_validator,
         default_pruner,
         count_log=counter
     ),
-    Solver(
-        next_empty_cell,
-        default_next_move,
-        naive_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_empty_cell,
-        default_next_move,
-        localized_validator,
-        value_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_empty_cell,
-        default_next_move,
-        naive_validator,
-        forward_pruner,
-        count_log=counter
-    ),
-    Solver(
-        next_empty_cell,
-        default_next_move,
-        localized_validator,
-        forward_pruner,
-        count_log=counter
-    ),
-]
+}
 
 if __name__ == '__main__':
     f = open('out/results.csv', 'w')
-    # File name, Grid Size, Solver, Clock Time (avg of 10 run in ms), Median
-            # Clock time,  Calls to Solve, Total Value Selection,
-            # Failed Validation, Total Assignments, Wrong Moves, Solved, Exact
-    f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
+    f.write('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % (
         'File',
         'Grid Size',
         'Number of Cells',
@@ -235,7 +141,7 @@ if __name__ == '__main__':
     ))
     for grid_file in grids:
         print(grid_file)
-        for solver in solvers:
+        for solver_name, solver in solvers.items():
             print('\t', solver)
             times = []
             count = 10
@@ -258,7 +164,7 @@ if __name__ == '__main__':
             is_solution = str(solved_grid).strip().replace(' ', '') == (
                 ''.join(content)).strip().replace(' ', '')
 
-            f.write('%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s\n' % (
+            f.write('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % (
                 grid_file,
                 str(grid.row_count) + 'x' + str(grid.column_count),
                 grid.cell_count,
@@ -272,7 +178,7 @@ if __name__ == '__main__':
                 sum(1 for room in grid.rooms if len(room.cells) == 7),
                 sum(1 for room in grid.rooms if len(room.cells) == 8),
                 sum(1 for room in grid.rooms if len(room.cells) == 9),
-                solver,
+                solver_name,
                 average_time * 1000,
                 median_time * 1000,
                 counter[0],

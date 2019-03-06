@@ -7,6 +7,9 @@ def forward_pruner(grid, cell):
     """
     removed = []
 
+    # Only for Human-Like MRV
+    cell.room.possible_options[cell.value].discard(cell)
+
     # Prune the values in the same room
     for room_cell in cell.room.cells:
         if cell == room_cell or room_cell.value is not None:

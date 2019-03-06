@@ -14,9 +14,6 @@ from validators import *
 from pruners import *
 from plotter import Plotter
 import time
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
 
 
 def ask(options):
@@ -59,8 +56,7 @@ inputs = [
         'prompt': 'Which pruner do you want to use?',
         'options': {
             1: default_pruner,
-            2: value_pruner,
-            3: forward_pruner,
+            2: forward_pruner,
         }
     },
 ]

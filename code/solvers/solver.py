@@ -1,4 +1,5 @@
 from pruners import patch_removed_values
+from pruners import forward_pruner
 
 # [Wrong Assignments, Calls to Solve, Total Assignments, Validation Checks]
 CALL_TO_SOLVE = 0
@@ -48,9 +49,6 @@ class Solver(object):
             cell.tries += 1
             cell.next_move = None
 
-            # Only for Human-Like MRV
-            cell.room.possible_options[move].discard(cell)
-
             pruned, should_continue = self.pruner(grid, cell)
 
             if should_continue:
@@ -59,12 +57,10 @@ class Solver(object):
                     return solution
 
             self.__log(WRONG_MOVES, cell.row, cell.col, move)
-
-            # Only for Human-Like MRV
-            cell.room.possible_options[move].add(cell)
             
-            # Restore the state
-            patch_removed_values(pruned)
+            if self.pruner == forward_pruner:
+                # Restore the state
+                patch_removed_values(pruned, cell)
 
         cell.value = None
 

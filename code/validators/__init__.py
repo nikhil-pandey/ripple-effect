@@ -1,2 +1,1 @@
 from .localized_validator import localized_validator
-from .naive_validator import naive_validator

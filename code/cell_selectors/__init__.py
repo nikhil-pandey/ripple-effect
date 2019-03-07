@@ -1,4 +1,4 @@
 from .next_empty_cell import next_empty_cell
 from .next_human_like_mrv_cell import next_human_like_mrv_cell
 from .next_mrv_cell import next_mrv_cell
-from .next_optimized_mrv_cell import next_optimized_mrv_cell
+from .next_forward_pruning_mrv_cell import next_forward_pruning_mrv_cell

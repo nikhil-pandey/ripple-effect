@@ -74,14 +74,6 @@ solvers = {
     # Human like solvers
     'Human': Solver(
         next_human_like_mrv_cell,
-        human_like_next_move,
-        localized_validator,
-        forward_pruner,
-        count_log=counter
-    ),
-    # Optimized MRV Solvers
-    'OMRV': Solver(
-        next_optimized_mrv_cell,
         default_next_move,
         localized_validator,
         forward_pruner,
@@ -89,7 +81,7 @@ solvers = {
     ),
     # MRV Solvers
     'MRVFWD': Solver(
-        next_mrv_cell,
+        next_forward_pruning_mrv_cell,
         default_next_move,
         localized_validator,
         forward_pruner,
@@ -168,16 +160,16 @@ if __name__ == '__main__':
                 grid_file,
                 str(grid.row_count) + 'x' + str(grid.column_count),
                 grid.cell_count,
-                len(grid.rooms),
-                sum(1 for room in grid.rooms if len(room.cells) == 1),
-                sum(1 for room in grid.rooms if len(room.cells) == 2),
-                sum(1 for room in grid.rooms if len(room.cells) == 3),
-                sum(1 for room in grid.rooms if len(room.cells) == 4),
-                sum(1 for room in grid.rooms if len(room.cells) == 5),
-                sum(1 for room in grid.rooms if len(room.cells) == 6),
-                sum(1 for room in grid.rooms if len(room.cells) == 7),
-                sum(1 for room in grid.rooms if len(room.cells) == 8),
-                sum(1 for room in grid.rooms if len(room.cells) == 9),
+                len(grid.regions),
+                sum(1 for region in grid.regions if len(region.cells) == 1),
+                sum(1 for region in grid.regions if len(region.cells) == 2),
+                sum(1 for region in grid.regions if len(region.cells) == 3),
+                sum(1 for region in grid.regions if len(region.cells) == 4),
+                sum(1 for region in grid.regions if len(region.cells) == 5),
+                sum(1 for region in grid.regions if len(region.cells) == 6),
+                sum(1 for region in grid.regions if len(region.cells) == 7),
+                sum(1 for region in grid.regions if len(region.cells) == 8),
+                sum(1 for region in grid.regions if len(region.cells) == 9),
                 solver_name,
                 average_time * 1000,
                 median_time * 1000,

@@ -20,7 +20,7 @@ class Cell(object):
         self.row = row
         self.col = col
         self.possible_moves = set()
-        self.room = None
+        self.region = None
         self.value = value
         self.tries = 0
         self.next_move = None

@@ -1,17 +1,17 @@
-def next_human_like_mrv_cell(rooms, cells):
+def next_human_like_mrv_cell(regions, cells):
     """
     Human like decision with fallback to MRV.
     Deduces cells that have no other possible options and prioritizes them.
     Else falls back to minimum remaining values.
-    :param rooms: The rooms.
+    :param regions: The regions.
     :param cells: The cells.
     :return: The next cell.
     """
     lowest_count = 0
     lowest_cell = None
 
-    for room in rooms:
-        for number, cells in room.possible_options.items():
+    for region in regions:
+        for number, cells in region.possible_options.items():
             if len(cells) == 1:
                 for cell in cells:
                     if cell.value is not None:
@@ -19,7 +19,7 @@ def next_human_like_mrv_cell(rooms, cells):
                     cell.next_move = number
                     return cell
 
-        for cell in room.cells:
+        for cell in region.cells:
             if cell.value is not None:
                 continue
 
@@ -33,8 +33,8 @@ def next_human_like_mrv_cell(rooms, cells):
                     lowest_cell = cell
                 elif cell.tries == lowest_cell.tries:
                     # Tie breaker
-                    # Bigger rooms get selected first
-                    if len(cell.room.cells) > len(lowest_cell.room.cells):
+                    # Bigger regions get selected first
+                    if len(cell.region.cells) > len(lowest_cell.region.cells):
                         lowest_cell = cell
 
     return lowest_cell

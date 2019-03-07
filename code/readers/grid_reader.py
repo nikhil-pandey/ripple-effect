@@ -1,5 +1,5 @@
 from cell import Cell
-from room import Room
+from region import Region
 from .base_reader import BaseReader
 from collections import deque
 from pruners import forward_pruner
@@ -13,12 +13,12 @@ class GridReader(BaseReader):
         :param file_name: Name of the file or String like input.
         """
         super().__init__(file_name)
-        self.rooms = []
+        self.regions = []
         self.__prepare()
 
     def __prepare(self):
         """
-        Prepares the grid by doing a dfs search to figure out the rooms.
+        Prepares the grid by doing a dfs search to figure out the regions.
         :return: None
         """
         main_visited = set()
@@ -29,41 +29,41 @@ class GridReader(BaseReader):
             if (row, col) in main_visited:
                 continue
 
-            room = Room()
-            self.rooms.append(room)
-            cell = self.__get_or_create_cell(room, row, col)
+            region = Region()
+            self.regions.append(region)
+            cell = self.__get_or_create_cell(region, row, col)
 
             visited = set()
             main_visited.add((row, col))
             visited.add((row, col))
 
-            room_queue = deque()
-            room_queue.append((cell.row, cell.col))
+            region_queue = deque()
+            region_queue.append((cell.row, cell.col))
 
-            while room_queue:
+            while region_queue:
 
-                state = room_queue.popleft()
+                state = region_queue.popleft()
                 successors = self.__get_successors(state)
 
                 for row, col in successors:
                     if (row, col) not in visited:
-                        self.__get_or_create_cell(room, row, col)
+                        self.__get_or_create_cell(region, row, col)
                         main_visited.add((row, col))
                         visited.add((row, col))
-                        room_queue.append((row, col))
+                        region_queue.append((row, col))
 
-        self.rooms.sort(key=lambda x: len(x.cells), reverse=True)
+        self.regions.sort(key=lambda x: len(x.cells), reverse=True)
         cell_having_values = []
-        for room in self.rooms:
-            for number in range(1, len(room.cells) + 1):
-                for cell in room.cells:
+        for region in self.regions:
+            for number in range(1, len(region.cells) + 1):
+                for cell in region.cells:
                     if cell.value is not None:
                         cell_having_values.append(cell)
                         continue
                     cell.possible_moves.add(number)
-                    if number not in room.possible_options:
-                        room.possible_options[number] = set()
-                    room.possible_options[number].add(cell)
+                    if number not in region.possible_options:
+                        region.possible_options[number] = set()
+                    region.possible_options[number].add(cell)
 
         # Remove possible values from around cells that already have values
         for cell in cell_having_values:
@@ -99,10 +99,10 @@ class GridReader(BaseReader):
 
             yield actual_succ_posn
 
-    def __get_or_create_cell(self, room, row, col):
+    def __get_or_create_cell(self, region, row, col):
         """
         Returns the cell if it already exists else creates a new cell.
-        :param room: The room cell is in.
+        :param region: The region cell is in.
         :param row: The row.
         :param col: The col.
         :return: The cell.
@@ -111,7 +111,7 @@ class GridReader(BaseReader):
             value = self.input_grid[row * 2 + 1][col * 2 + 1]
             value = int(value) if value != '.' else None
             self.cells[row][col] = Cell(row, col, value)
-            self.cells[row][col].room = room
-            room.cells.add(self.cells[row][col])
+            self.cells[row][col].region = region
+            region.cells.add(self.cells[row][col])
 
         return self.cells[row][col]

@@ -1,2 +1,1 @@
 from .default_next_move import default_next_move
-from .human_like_next_move import human_like_next_move

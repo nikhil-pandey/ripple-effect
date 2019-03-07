@@ -21,7 +21,7 @@ def ask(options):
     for idx, option in options['options'].items():
         print('%s: %s' % (idx, option.__name__))
 
-    answer = int(input('>'))
+    answer = int(input('> '))
     if answer:
         return options['options'][answer]
 
@@ -30,26 +30,12 @@ def ask(options):
 
 inputs = [
     {
-        'prompt': 'How do you want to select the next cell?',
+        'prompt': 'Which solver do you want to use?',
         'options': {
             1: next_empty_cell,
             2: next_mrv_cell,
-            3: next_optimized_mrv_cell,
+            3: next_forward_pruning_mrv_cell,
             4: next_human_like_mrv_cell,
-        }
-    },
-    {
-        'prompt': 'How do you want to select the next value?',
-        'options': {
-            1: default_next_move,
-            2: human_like_next_move,
-        }
-    },
-    {
-        'prompt': 'Which validator do you want to use?',
-        'options': {
-            1: naive_validator,
-            2: localized_validator,
         }
     },
     {
@@ -63,21 +49,27 @@ inputs = [
 
 counter = [0, 0, 0, 0, 0]
 log = []
+
+which_solver = ask(inputs[0])
+pruner = default_pruner if which_solver in [next_empty_cell, next_mrv_cell] else forward_pruner
+file_name = input('Enter the file name: ').strip()
+
 solver = Solver(
-    ask(inputs[0]),
-    ask(inputs[1]),
-    ask(inputs[2]),
-    ask(inputs[3]),
+    which_solver,
+    default_next_move,
+    localized_validator,
+    pruner,
     log,
     counter
 )
 
-grid = GridReader(input('Enter the file name: ').strip())
+grid = GridReader(file_name)
 grid_copy = GridReader(str(grid))
 
 start_time = time.time()
 solved_grid = solver.solve(grid)
 elapsed_time = time.time() - start_time
+
 print(solved_grid)
 print('Solved in %s seconds' % (elapsed_time))
 print('Called Solve Method: %s times' % (counter[0]))

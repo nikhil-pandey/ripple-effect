@@ -32,7 +32,7 @@ class Solver(object):
     def solve(self, grid):
         self.__log(CALL_TO_SOLVE, 0, 0, 0)
 
-        cell = self.cell_selector(grid.rooms, grid.cells)
+        cell = self.cell_selector(grid.regions, grid.cells)
 
         if cell is None:
             return grid

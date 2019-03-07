@@ -1,8 +1,8 @@
-def next_optimized_mrv_cell(rooms, cells):
+def next_forward_pruning_mrv_cell(regions, cells):
     """
     Selects next move based on minimum remaining values with some tie breaking
     between two mrv cells.
-    :param rooms: The rooms.
+    :param regions: The regions.
     :param cells: The cells.
     :return: The next cell.
     """
@@ -22,8 +22,8 @@ def next_optimized_mrv_cell(rooms, cells):
                     lowest_cell = cell
                 elif cell.tries == lowest_cell.tries:
                     # Tie breaker
-                    # Bigger rooms get selected first
-                    if len(cell.room.cells) > len(lowest_cell.room.cells):
+                    # Bigger regions get selected first
+                    if len(cell.region.cells) > len(lowest_cell.region.cells):
                         lowest_cell = cell
 
     return lowest_cell

@@ -1,18 +1,12 @@
-def next_mrv_cell(rooms, cells):
+def next_mrv_cell(regions, cells):
     """
     Selects next move based on minimum remaining values.
-    :param rooms: The rooms.
+    :param regions: The regions sorted in descending order of size.
     :param cells: The cells.
     :return: The next cell.
     """
-    lowest_count = 0
-    lowest_cell = None
-    for row in cells:
-        for cell in row:
+    for idx in range(len(regions) - 1, -1, -1):
+        for cell in regions[idx].cells:
             if cell.value is not None:
                 continue
-            if lowest_cell is None or len(cell.possible_moves) < lowest_count:
-                lowest_count = len(cell.possible_moves)
-                lowest_cell = cell
-
-    return lowest_cell
+            return cell

@@ -6,11 +6,11 @@ def localized_validator(grid, cell, value):
     :param value: The new value.
     :return: True if validation passed else False
     """
-    for room_cell in cell.room.cells:
-        if cell == room_cell or room_cell.value is None:
+    for region_cell in cell.region.cells:
+        if cell == region_cell or region_cell.value is None:
             continue
 
-        if room_cell.value == value:
+        if region_cell.value == value:
             return False
 
     for c_idx in range(max(0, cell.col - value),

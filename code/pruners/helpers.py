@@ -6,8 +6,8 @@ def patch_removed_values(items, cell):
     :return: None
     """
     # Only for Human-Like MRV
-    cell.room.possible_options[cell.value].add(cell)
+    cell.region.possible_options[cell.value].add(cell)
     
     for cell, val in items:
-        cell.room.possible_options[val].add(cell)
+        cell.region.possible_options[val].add(cell)
         cell.possible_moves.add(val)

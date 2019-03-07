@@ -5,4 +5,11 @@ def default_next_move(cell):
     :param cell: The cell.
     :return: The default set of moves.
     """
-    return cell.possible_moves
+    next_move = cell.next_move
+
+    if next_move is None:
+        for value in cell.possible_moves:
+            yield value
+        return
+
+    yield next_move
